@@ -31,10 +31,12 @@ button, a {
   -webkit-tap-highlight-color: transparent;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-serif);
-  color: #020617;
-  letter-spacing: -0.02em;
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    color: inherit;
+    letter-spacing: -0.02em;
+  }
 }
 
 /* Journalistic Editorial Styling */

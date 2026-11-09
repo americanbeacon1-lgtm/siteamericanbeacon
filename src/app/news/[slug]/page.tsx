@@ -208,7 +208,12 @@ export default async function ArticlePage({ params }: PageProps) {
         <ShareButtons title={article.title} />
 
         {/* Audio Narration Bar */}
-        <AudioPlayer title={article.title} readTime={article.readTimeMinutes} />
+        <AudioPlayer
+          title={article.title}
+          subtitle={article.subtitle}
+          content={article.content}
+          readTime={article.readTimeMinutes}
+        />
 
         {/* Lead Hero Image */}
         <figure className="my-6">

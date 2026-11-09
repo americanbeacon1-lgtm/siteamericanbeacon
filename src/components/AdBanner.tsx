@@ -273,10 +273,16 @@ export default function AdBanner({ position, adSlot, className = '' }: AdBannerP
                   <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 font-bold block mb-1">
                     THE AMERICAN BEACON • COMMERCIAL DESK
                   </span>
-                  <h4 className="font-serif text-lg font-black text-white leading-tight">
+                  <h4
+                    className="font-serif text-lg font-black !text-white leading-tight"
+                    style={{ color: '#ffffff' }}
+                  >
                     Promote Your Company to Millions of U.S. Decision Makers
                   </h4>
-                  <p className="text-xs text-slate-300 mt-1.5 leading-relaxed">
+                  <p
+                    className="text-xs !text-slate-200 mt-1.5 leading-relaxed"
+                    style={{ color: '#e2e8f0' }}
+                  >
                     Place your brand directly in front of senior executives, investors, and affluent American consumers with high-impact editorial placement.
                   </p>
                 </div>
