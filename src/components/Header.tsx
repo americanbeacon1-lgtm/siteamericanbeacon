@@ -193,9 +193,17 @@ export default function Header() {
               <span className="block text-[8px] sm:text-[10px] font-bold tracking-[0.18em] sm:tracking-[0.25em] text-neutral-500 uppercase mb-0.5 truncate">
                 The Voice of the Republic • Washington, D.C.
               </span>
-              <h1 className="font-serif text-2xl sm:text-5xl md:text-6xl font-black tracking-tight text-neutral-950 group-hover:text-neutral-800 transition leading-none">
-                THE AMERICAN BEACON
-              </h1>
+              <div className="flex items-center justify-center gap-2 sm:gap-3.5">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/icon.png"
+                  alt="The American Beacon Emblem"
+                  className="w-7 h-7 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl shadow-md border border-neutral-200 object-cover shrink-0 group-hover:scale-105 transition-transform duration-300"
+                />
+                <h1 className="font-serif text-2xl sm:text-5xl md:text-6xl font-black tracking-tight text-neutral-950 group-hover:text-neutral-800 transition leading-none">
+                  THE AMERICAN BEACON
+                </h1>
+              </div>
               <div className="flex items-center justify-center gap-2 mt-1 hidden sm:flex">
                 <span className="h-[1px] w-8 bg-red-700"></span>
                 <p className="text-[11px] font-sans text-neutral-600 tracking-wider uppercase font-semibold">

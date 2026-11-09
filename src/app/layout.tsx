@@ -73,6 +73,18 @@ export async function generateMetadata(): Promise<Metadata> {
     verification: {
       google: settings.googleSearchConsoleTag,
     },
+    icons: {
+      icon: [
+        { url: '/favicon.ico', sizes: 'any' },
+        { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+        { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+        { url: '/icon.png', sizes: '512x512', type: 'image/png' },
+      ],
+      apple: [
+        { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+      ],
+      shortcut: '/favicon.ico',
+    },
   };
 }
 
@@ -113,6 +125,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Favicon & App Icons */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
+        <link rel="icon" href="/icon.png" type="image/png" sizes="512x512" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+        
         {/* Google Tag Manager (GTM-5NVRRVC2) */}
         <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-5NVRRVC2" />
         <script

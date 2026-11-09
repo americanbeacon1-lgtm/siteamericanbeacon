@@ -74,13 +74,21 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 pb-12 border-b border-neutral-800 text-xs">
           {/* Col 1 & 2: Brand Information */}
           <div className="col-span-2 space-y-4">
-            <Link href="/" className="inline-block">
-              <h2 className="font-serif text-2xl font-black text-white tracking-tight">
-                THE AMERICAN BEACON
-              </h2>
-              <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-semibold mt-0.5">
-                The Voice of the Republic
-              </p>
+            <Link href="/" className="inline-flex items-center gap-3 group">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/icon.png"
+                alt="The American Beacon Emblem"
+                className="w-9 h-9 rounded-lg border border-neutral-700 object-cover shrink-0 group-hover:scale-105 transition-transform"
+              />
+              <div>
+                <h2 className="font-serif text-2xl font-black text-white tracking-tight group-hover:text-neutral-200 transition">
+                  THE AMERICAN BEACON
+                </h2>
+                <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-semibold mt-0.5">
+                  The Voice of the Republic
+                </p>
+              </div>
             </Link>
             <p className="text-neutral-400 leading-relaxed pr-6 text-xs">
               The American Beacon is a national digital newspaper dedicated to independent, rigorous, and fact-verified journalism. From the corridors of Capitol Hill to Wall Street trading floors and frontier laboratories, we deliver truth without fear or favor.

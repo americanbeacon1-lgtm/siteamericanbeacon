@@ -8,6 +8,9 @@ export function renderLoginPage(hasError: boolean = false): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The American Beacon — Login de Administrador</title>
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -20,8 +23,8 @@ export function renderLoginPage(hasError: boolean = false): string {
 <body class="bg-[#060a12] text-slate-100 min-h-screen flex flex-col justify-center items-center p-4 selection:bg-cyan-500 selection:text-black">
   <div class="w-full max-w-md">
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-red-600 via-rose-700 to-slate-900 border border-red-500/30 shadow-2xl shadow-red-950/60 mb-4 font-serif text-2xl font-black text-white">
-        AB
+      <div class="inline-flex items-center justify-center mb-4">
+        <img src="/icon.png" alt="The American Beacon Logo" class="w-16 h-16 rounded-2xl border border-red-500/30 shadow-2xl shadow-red-950/60 object-cover" />
       </div>
       <h1 class="font-serif text-2xl sm:text-3xl font-black tracking-tight text-white uppercase">
         The American Beacon
@@ -129,6 +132,9 @@ export function renderConsoleHTML(): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The American Beacon — Console Editorial Executivo (Console Online)</title>
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
@@ -167,9 +173,7 @@ export function renderConsoleHTML(): string {
   <!-- TOP COMMAND HEADER -->
   <header class="bg-[#0b1120] border-b border-slate-800/80 sticky top-0 z-40 px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between flex-wrap gap-2">
     <div class="flex items-center space-x-3 sm:space-x-4">
-      <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-red-600 via-rose-700 to-slate-900 flex items-center justify-center font-serif text-base sm:text-lg font-black text-white shadow-lg shadow-red-950/40 border border-red-500/30 shrink-0">
-        AB
-      </div>
+      <img src="/icon.png" alt="The American Beacon Logo" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg shadow-lg shadow-red-950/40 border border-cyan-500/30 shrink-0 object-cover" />
       <div>
         <div class="flex items-center space-x-1.5 sm:space-x-2 flex-wrap">
           <span class="text-xs font-black tracking-widest text-slate-300 uppercase">THE AMERICAN BEACON</span>
