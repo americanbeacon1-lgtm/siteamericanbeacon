@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -12,6 +12,8 @@ import {
   CloudSun,
   ShieldAlert,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Globe,
   Sliders,
   Sparkles,
@@ -24,6 +26,61 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [currentDateStr, setCurrentDateStr] = useState('');
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+
+  const navScrollRef = useRef<HTMLDivElement>(null);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkScroll = () => {
+    if (navScrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = navScrollRef.current;
+      setCanScrollLeft(scrollLeft > 6);
+      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 6);
+    }
+  };
+
+  useEffect(() => {
+    // Initial check and resize observer
+    checkScroll();
+    const handleResize = () => checkScroll();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Close menus on route change
+  useEffect(() => {
+    setMoreMenuOpen(false);
+    setMobileMenuOpen(false);
+    setSearchOpen(false);
+  }, [pathname]);
+
+  // Click outside to close More dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target as Node)) {
+        setMoreMenuOpen(false);
+      }
+    }
+    if (moreMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [moreMenuOpen]);
+
+  const scrollNav = (direction: 'left' | 'right') => {
+    if (navScrollRef.current) {
+      const scrollAmount = 260;
+      navScrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      });
+      setTimeout(checkScroll, 320);
+    }
+  };
 
   useEffect(() => {
     // Standard US date formatting: "Sunday, November 8, 2026"
@@ -220,31 +277,165 @@ export default function Header() {
         </div>
       </div>
 
-      {/* 5. PRIMARY CATEGORY NAVIGATION */}
-      <nav className="border-b border-neutral-300 bg-white shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <ul className="hidden md:flex items-center justify-between text-[13px] font-semibold tracking-tight text-neutral-800 uppercase py-2.5 overflow-x-auto scrollbar-none">
+      {/* 5. PRIMARY CATEGORY NAVIGATION (Responsive, Auto-Fit, Never Cut Off) */}
+      <nav className="border-b border-neutral-300 bg-white shadow-xs relative z-30">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
+          {/* Desktop & Tablet Navigation */}
+          <div className="hidden md:flex items-center justify-between relative">
+            {/* Left Scroll Arrow */}
+            {canScrollLeft && (
+              <button
+                type="button"
+                onClick={() => scrollNav('left')}
+                className="absolute left-0 z-20 h-full px-2 bg-gradient-to-r from-white via-white/95 to-transparent text-neutral-700 hover:text-red-700 flex items-center justify-center transition"
+                aria-label="Scroll menu left"
+              >
+                <ChevronLeft className="w-4 h-4 bg-white/90 rounded-full shadow-xs border border-neutral-200" />
+              </button>
+            )}
+
+            {/* Scrollable Category List */}
+            <div
+              ref={navScrollRef}
+              onScroll={checkScroll}
+              className="flex-1 overflow-x-auto scrollbar-none scroll-smooth py-2.5"
+            >
+              <ul className="flex items-center space-x-1 lg:space-x-1.5 xl:space-x-2.5 text-xs xl:text-[13px] font-semibold tracking-tight uppercase text-neutral-800 min-w-max">
+                {CATEGORIES.map((cat) => {
+                  const isActive = pathname === `/category/${cat.slug}`;
+                  const isBreaking = cat.slug === 'breaking-news';
+                  return (
+                    <li key={cat.slug} className="shrink-0">
+                      <Link
+                        href={`/category/${cat.slug}`}
+                        className={`px-2 lg:px-2.5 xl:px-3 py-1 rounded transition duration-150 inline-flex items-center whitespace-nowrap ${
+                          isActive
+                            ? 'text-red-700 font-bold border-b-2 border-red-700 -mb-2.5 pb-2'
+                            : isBreaking
+                            ? 'text-red-700 font-bold hover:text-red-800'
+                            : 'text-neutral-800 hover:text-red-700 font-semibold'
+                        }`}
+                      >
+                        {/* On compact viewports, use shortName (e.g. AI, Tech) to prevent squishing or clipping */}
+                        <span className="hidden xl:inline">{cat.name}</span>
+                        <span className="xl:hidden">{cat.shortName || cat.name}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            {/* Right Scroll Arrow */}
+            {canScrollRight && (
+              <button
+                type="button"
+                onClick={() => scrollNav('right')}
+                className="absolute right-24 lg:right-28 z-20 h-full px-2 bg-gradient-to-l from-white via-white/95 to-transparent text-neutral-700 hover:text-red-700 flex items-center justify-center transition"
+                aria-label="Scroll menu right"
+              >
+                <ChevronRight className="w-4 h-4 bg-white/90 rounded-full shadow-xs border border-neutral-200" />
+              </button>
+            )}
+
+            {/* "More Sections" Dropdown Menu */}
+            <div ref={moreMenuRef} className="relative shrink-0 pl-2 lg:pl-3 border-l border-neutral-200 ml-1">
+              <button
+                type="button"
+                onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+                className={`flex items-center gap-1 px-2.5 py-1 text-xs xl:text-[13px] font-bold uppercase tracking-wider rounded transition ${
+                  moreMenuOpen
+                    ? 'bg-neutral-900 text-white'
+                    : 'text-neutral-700 hover:text-red-700 hover:bg-neutral-100'
+                }`}
+                aria-expanded={moreMenuOpen}
+                aria-label="Toggle all editorial sections"
+              >
+                <span>More</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${moreMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Dropdown Menu Panel */}
+              {moreMenuOpen && (
+                <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white border border-neutral-300 rounded-xl shadow-2xl p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-neutral-200">
+                    <span className="text-[11px] font-black uppercase tracking-widest text-neutral-600">
+                      All Editorial Desks & Sections
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setMoreMenuOpen(false)}
+                      className="text-neutral-400 hover:text-neutral-700 p-0.5 rounded"
+                      aria-label="Close menu"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
+                    {CATEGORIES.map((cat) => (
+                      <Link
+                        key={cat.slug}
+                        href={`/category/${cat.slug}`}
+                        onClick={() => setMoreMenuOpen(false)}
+                        className={`py-1.5 px-2 rounded hover:bg-neutral-100 flex items-center justify-between group transition ${
+                          pathname === `/category/${cat.slug}` ? 'font-bold text-red-700 bg-red-50' : 'text-neutral-800'
+                        }`}
+                      >
+                        <span className="group-hover:text-red-700 transition truncate pr-1">{cat.name}</span>
+                        <span
+                          className="w-1.5 h-1.5 rounded-full shrink-0"
+                          style={{ backgroundColor: cat.accentColor || '#b91c1c' }}
+                        />
+                      </Link>
+                    ))}
+                  </div>
+
+                  <div className="mt-3 pt-3 border-t border-neutral-200 grid grid-cols-2 gap-2 text-[11px]">
+                    <Link
+                      href="/advertise"
+                      onClick={() => setMoreMenuOpen(false)}
+                      className="p-1.5 rounded bg-neutral-50 hover:bg-neutral-100 font-semibold text-neutral-800 flex items-center justify-between"
+                    >
+                      <span>Advertise / Media Kit</span>
+                      <span className="text-red-700 font-bold">→</span>
+                    </Link>
+                    <Link
+                      href="/newsletters"
+                      onClick={() => setMoreMenuOpen(false)}
+                      className="p-1.5 rounded bg-neutral-50 hover:bg-neutral-100 font-semibold text-neutral-800 flex items-center justify-between"
+                    >
+                      <span>Daily Newsletters</span>
+                      <span className="text-red-700 font-bold">→</span>
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Mobile Category Ribbon (Smooth Swipeable Strip, Never Cut Off) */}
+          <div className="md:hidden flex items-center overflow-x-auto scrollbar-none py-2 space-x-1.5 px-1 scroll-smooth">
             {CATEGORIES.map((cat) => {
               const isActive = pathname === `/category/${cat.slug}`;
               const isBreaking = cat.slug === 'breaking-news';
               return (
-                <li key={cat.slug} className="shrink-0">
-                  <Link
-                    href={`/category/${cat.slug}`}
-                    className={`px-2.5 py-1 rounded transition duration-150 inline-block ${
-                      isActive
-                        ? 'text-red-700 font-bold border-b-2 border-red-700 -mb-2.5 pb-2'
-                        : isBreaking
-                        ? 'text-red-700 font-bold hover:text-red-800'
-                        : 'text-neutral-800 hover:text-red-700'
-                    }`}
-                  >
-                    {cat.name}
-                  </Link>
-                </li>
+                <Link
+                  key={cat.slug}
+                  href={`/category/${cat.slug}`}
+                  className={`shrink-0 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider whitespace-nowrap transition ${
+                    isActive
+                      ? 'bg-red-700 text-white'
+                      : isBreaking
+                      ? 'bg-red-50 text-red-700 border border-red-300'
+                      : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+                  }`}
+                >
+                  {cat.name}
+                </Link>
               );
             })}
-          </ul>
+          </div>
         </div>
       </nav>
 
