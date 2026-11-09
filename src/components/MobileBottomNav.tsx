@@ -79,14 +79,12 @@ export default function MobileBottomNav() {
               {/* Direct Quick Links */}
               <div className="pt-3 border-t border-neutral-800 space-y-2 text-xs">
                 <a
-                  href="http://localhost:3001"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/admin"
                   className="flex items-center justify-between p-2.5 rounded-lg bg-amber-950/40 border border-amber-600/40 text-amber-400 font-bold"
                   onClick={() => setSectionsOpen(false)}
                 >
                   <span className="flex items-center gap-2">
-                    <Sliders className="w-4 h-4" /> Painel Executivo (Porta 3001)
+                    <Sliders className="w-4 h-4" /> Painel Executivo
                   </span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
@@ -172,13 +170,11 @@ export default function MobileBottomNav() {
             <span className="text-[10px] tracking-tight">Search</span>
           </Link>
 
-          {/* Admin Panel (Porta 3001) */}
+          {/* Admin Panel */}
           <a
-            href="http://localhost:3001"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/admin"
             className="flex flex-col items-center justify-center py-1 px-1 rounded text-amber-600 hover:text-amber-700 transition"
-            title="Console Admin na Porta 3001"
+            title="Console Admin"
           >
             <Sliders className="w-5 h-5 mb-0.5" />
             <span className="text-[10px] tracking-tight font-bold">Admin</span>

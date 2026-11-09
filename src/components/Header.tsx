@@ -68,16 +68,13 @@ export default function Header() {
 
           <div className="flex items-center space-x-2 sm:space-x-4">
             <a
-              href="http://localhost:3001"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/admin"
               className="text-amber-400 hover:text-amber-300 flex items-center gap-1 font-semibold transition bg-amber-950/40 px-2 sm:px-2.5 py-0.5 rounded border border-amber-600/30 text-[10px] sm:text-[11px]"
-              title="Abrir Console Administrativo Executivo na Porta 3001"
+              title="Abrir Console Editorial Administrativo"
             >
               <Sliders className="w-3 h-3" />
               <span className="hidden sm:inline">Painel Admin</span>
               <span className="sm:hidden">Admin</span>
-              <span className="text-[9px] text-amber-500 font-mono">(3001)</span>
             </a>
             <span className="hidden sm:inline text-neutral-600">|</span>
             <Link href="/newsletters" className="hidden sm:inline hover:text-white transition">
@@ -293,13 +290,11 @@ export default function Header() {
 
           <div className="pt-4 border-t border-neutral-800 space-y-2 text-xs">
             <a
-              href="http://localhost:3001"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/admin"
               className="block text-amber-400 font-bold py-1"
               onClick={() => setMobileMenuOpen(false)}
             >
-              ⚙ Painel de Controle Executivo (Porta 3001)
+              ⚙ Painel de Controle Editorial
             </a>
             <Link
               href="/about"
