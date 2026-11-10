@@ -195,12 +195,29 @@ export function renderConsoleHTML(): string {
         <i class="fa-solid fa-arrow-up-right-from-square text-[9px] text-slate-400"></i>
       </a>
 
-      <!-- Quick Harvest 30 Days Button -->
-      <button onclick="triggerMonthHarvest(30)" id="btn-quick-sync" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-[11px] sm:text-xs px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg shadow-lg shadow-emerald-950/50 flex items-center gap-1.5 sm:gap-2 transition cursor-pointer">
-        <i class="fa-solid fa-calendar-days" id="quick-sync-icon"></i>
-        <span class="hidden sm:inline">Puxar Notícias do Último Mês (30 Dias)</span>
-        <span class="sm:hidden">Coletar 30 Dias</span>
-      </button>
+      <!-- Quick Harvest Controls (1 to 10 days, 30 days) -->
+      <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-700/80 rounded-lg p-1">
+        <label for="top-harvest-days" class="text-[10px] text-slate-400 uppercase font-mono px-1 hidden md:inline">Período:</label>
+        <select id="top-harvest-days" class="bg-[#070b14] border border-slate-700 text-slate-200 text-[11px] sm:text-xs font-semibold px-2 py-1 rounded focus:outline-none cursor-pointer">
+          <option value="1">1 Dia (24h)</option>
+          <option value="2">2 Dias</option>
+          <option value="3">3 Dias</option>
+          <option value="4">4 Dias</option>
+          <option value="5">5 Dias</option>
+          <option value="6">6 Dias</option>
+          <option value="7">7 Dias (Semana)</option>
+          <option value="8">8 Dias</option>
+          <option value="9">9 Dias</option>
+          <option value="10" selected>10 Dias (Padrão)</option>
+          <option value="15">15 Dias</option>
+          <option value="30">30 Dias (Mês)</option>
+        </select>
+        <button onclick="triggerQuickHarvest()" id="btn-quick-sync" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-[11px] sm:text-xs px-2.5 sm:px-3 py-1 rounded shadow flex items-center gap-1.5 transition cursor-pointer">
+          <i class="fa-solid fa-satellite-dish" id="quick-sync-icon"></i>
+          <span class="hidden sm:inline">Puxar Notícias</span>
+          <span class="sm:hidden">Puxar</span>
+        </button>
+      </div>
 
       <!-- Logged User Badge -->
       <div class="hidden lg:flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-[11px] text-slate-300">
@@ -255,7 +272,7 @@ export function renderConsoleHTML(): string {
             </button>
             <button onclick="switchTab('harvester')" id="nav-harvester" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition text-slate-300 hover:bg-slate-800/60">
               <i class="fa-solid fa-satellite-dish w-4 text-emerald-400"></i>
-              <span>Puxador de Notícias (30 Dias)</span>
+              <span>Puxador de Notícias (1 a 10 Dias)</span>
             </button>
             <button onclick="switchTab('articles')" id="nav-articles" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition text-slate-300 hover:bg-slate-800/60">
               <i class="fa-solid fa-newspaper w-4 text-indigo-400"></i>
@@ -421,7 +438,7 @@ export function renderConsoleHTML(): string {
                 Central de Puxada de Notícias dos Estados Unidos
               </h2>
               <p class="text-xs text-slate-400 mt-1">
-                Extraia centenas de notícias publicadas no último mês diretamente dos grandes veículos.
+                Puxe notícias dos últimos 1 a 10 dias (ou até 30 dias). Ao puxar, as notícias mais recentes entram automaticamente no topo da página principal.
               </p>
             </div>
             <button onclick="executeHarvestFromForm()" id="btn-harvest-execute" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer">
@@ -430,18 +447,66 @@ export function renderConsoleHTML(): string {
             </button>
           </div>
 
-          <!-- Controls: Date Range & Max Articles -->
+          <!-- Quick 1-Click Day Buttons (1 to 10 Days) -->
+          <div class="bg-[#0a0f1d] p-4 rounded-xl border border-slate-800 space-y-3">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                <i class="fa-solid fa-bolt text-amber-400 mr-1.5"></i> Seleção Rápida de Dias (1 a 10 Dias):
+              </span>
+              <span class="text-[11px] text-slate-400 font-mono">Clique para escolher o dia desejado:</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5" id="harvest-quick-days-pills">
+              <button type="button" onclick="setHarvestDay(1)" data-day="1" class="harvest-day-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700">1 Dia (24h)</button>
+              <button type="button" onclick="setHarvestDay(2)" data-day="2" class="harvest-day-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700">2 Dias</button>
+              <button type="button" onclick="setHarvestDay(3)" data-day="3" class="harvest-day-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700">3 Dias</button>
+              <button type="button" onclick="setHarvestDay(4)" data-day="4" class="harvest-day-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700">4 Dias</button>
+              <button type="button" onclick="setHarvestDay(5)" data-day="5" class="harvest-day-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700">5 Dias</button>
+              <button type="button" onclick="setHarvestDay(6)" data-day="6" class="harvest-day-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700">6 Dias</button>
+              <button type="button" onclick="setHarvestDay(7)" data-day="7" class="harvest-day-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700">7 Dias (1 Sem)</button>
+              <button type="button" onclick="setHarvestDay(8)" data-day="8" class="harvest-day-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700">8 Dias</button>
+              <button type="button" onclick="setHarvestDay(9)" data-day="9" class="harvest-day-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700">9 Dias</button>
+              <button type="button" onclick="setHarvestDay(10)" data-day="10" class="harvest-day-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white border border-emerald-400">10 Dias</button>
+              <button type="button" onclick="setHarvestDay(15)" data-day="15" class="harvest-day-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700">15 Dias</button>
+              <button type="button" onclick="setHarvestDay(30)" data-day="30" class="harvest-day-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700">30 Dias (Mês)</button>
+            </div>
+          </div>
+
+          <!-- Controls: Date Range, Filter Mode & Max Articles -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-[#0a0f1d] p-5 rounded-xl border border-slate-800 text-xs">
             <div>
               <label class="block font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                <i class="fa-regular fa-calendar text-emerald-400 mr-1"></i> Período Histórico de Busca:
+                <i class="fa-regular fa-calendar text-emerald-400 mr-1"></i> Período / Dia Selecionado:
               </label>
-              <select id="harvest-days-select" class="w-full bg-[#131d33] border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-cyan-500 text-xs">
-                <option value="30" selected>Último Mês Completo (30 Dias) — Máxima Cobertura</option>
+              <select id="harvest-days-select" onchange="syncHarvestDayPills(this.value)" class="w-full bg-[#131d33] border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-cyan-500 text-xs">
+                <option value="1">1 Dia (Últimas 24 Horas / Plantão Imediato)</option>
+                <option value="2">2 Dias (Hoje e Ontem)</option>
+                <option value="3">3 Dias</option>
+                <option value="4">4 Dias</option>
+                <option value="5">5 Dias</option>
+                <option value="6">6 Dias</option>
+                <option value="7">7 Dias (Última Semana)</option>
+                <option value="8">8 Dias</option>
+                <option value="9">9 Dias</option>
+                <option value="10" selected>10 Dias (Padrão Recomendado)</option>
                 <option value="15">Últimos 15 Dias</option>
-                <option value="7">Últimos 7 Dias</option>
-                <option value="1">Últimas 24 Horas (Plantão Imediato)</option>
+                <option value="30">Último Mês Completo (30 Dias)</option>
               </select>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                <i class="fa-solid fa-filter text-indigo-400 mr-1"></i> Modo de Filtro de Data:
+              </label>
+              <div class="space-y-1.5 pt-1">
+                <label class="flex items-center gap-2 cursor-pointer text-slate-200">
+                  <input type="radio" name="harvest-mode" id="harvest-mode-range" value="range" checked class="accent-emerald-500">
+                  <span><strong>Período Acumulado</strong> (dos últimos N dias)</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-slate-200">
+                  <input type="radio" name="harvest-mode" id="harvest-mode-exact" value="exact" class="accent-emerald-500">
+                  <span><strong>Dia Específico</strong> (somente do dia selecionado)</span>
+                </label>
+              </div>
             </div>
 
             <div>
@@ -449,17 +514,11 @@ export function renderConsoleHTML(): string {
                 <i class="fa-solid fa-layer-group text-cyan-400 mr-1"></i> Limite por Feed:
               </label>
               <select id="harvest-limit-select" class="w-full bg-[#131d33] border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-cyan-500 text-xs">
-                <option value="45" selected>45 matérias por canal (Extensivo ~500+ matérias)</option>
-                <option value="25">25 matérias por canal (Equilibrado)</option>
+                <option value="35" selected>35 matérias por canal (Recomendado ~300+ matérias)</option>
+                <option value="20">20 matérias por canal (Equilibrado)</option>
                 <option value="10">10 matérias por canal (Rápido)</option>
+                <option value="50">50 matérias por canal (Extensivo)</option>
               </select>
-            </div>
-
-            <div>
-              <label class="block font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                <i class="fa-solid fa-clock text-purple-400 mr-1"></i> URL do Cron de Automação:
-              </label>
-              <input type="text" readonly value="//api/cron/fetch-news?days=30" class="w-full bg-[#070b14] border border-slate-800 text-slate-400 font-mono text-[11px] rounded-lg p-2.5">
             </div>
           </div>
 
@@ -998,20 +1057,46 @@ export function renderConsoleHTML(): string {
       renderFeedsChecklist();
     }
 
-    // 30-Day News Harvester Trigger
-    async function triggerMonthHarvest(days = 30) {
+    // News Harvester Helpers & Handlers
+    function setHarvestDay(val) {
+      const select = document.getElementById('harvest-days-select');
+      if (select) {
+        select.value = String(val);
+      }
+      syncHarvestDayPills(val);
+    }
+
+    function syncHarvestDayPills(val) {
+      const strVal = String(val);
+      document.querySelectorAll('.harvest-day-btn').forEach(btn => {
+        if (btn.dataset.day === strVal) {
+          btn.className = 'harvest-day-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white border border-emerald-400 shadow';
+        } else {
+          btn.className = 'harvest-day-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700';
+        }
+      });
+    }
+
+    async function triggerQuickHarvest() {
+      const select = document.getElementById('top-harvest-days');
+      const days = parseInt(select ? select.value : '10', 10);
+      await triggerMonthHarvest(days);
+    }
+
+    // 1-10 Day News Harvester Trigger
+    async function triggerMonthHarvest(days = 10) {
       const btn = document.getElementById('btn-quick-sync');
       const icon = document.getElementById('quick-sync-icon');
-      btn.disabled = true;
-      icon.className = 'fa-solid fa-spinner animate-spin';
+      if (btn) btn.disabled = true;
+      if (icon) icon.className = 'fa-solid fa-spinner animate-spin';
 
-      showToast(\`Iniciando puxada profunda de notícias dos últimos \${days} dias nos EUA...\`);
+      showToast(\`Iniciando puxada de notícias dos últimos \${days} dias nos EUA...\`);
 
       try {
         const res = await fetch('/api/sync-month', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ days, maxPerFeed: 40, selectedFeedIds })
+          body: JSON.stringify({ days, maxPerFeed: 35, selectedFeedIds })
         });
         const data = await res.json();
         if (data.success) {
@@ -1024,13 +1109,14 @@ export function renderConsoleHTML(): string {
       } catch (e) {
         showToast('Falha na conexão com os servidores dos EUA.', false);
       } finally {
-        btn.disabled = false;
-        icon.className = 'fa-solid fa-calendar-days';
+        if (btn) btn.disabled = false;
+        if (icon) icon.className = 'fa-solid fa-satellite-dish';
       }
     }
 
     async function executeHarvestFromForm() {
       const days = parseInt(document.getElementById('harvest-days-select').value, 10);
+      const isExactDay = document.getElementById('harvest-mode-exact')?.checked;
       const maxPerFeed = parseInt(document.getElementById('harvest-limit-select').value, 10);
       const btn = document.getElementById('btn-harvest-execute');
       const icon = document.getElementById('harvest-exec-icon');
@@ -1038,13 +1124,24 @@ export function renderConsoleHTML(): string {
       btn.disabled = true;
       icon.className = 'fa-solid fa-spinner animate-spin';
 
-      showToast(\`Puxando notícias dos últimos \${days} dias com limite de \${maxPerFeed}/feed...\`);
+      const payload = {
+        days: isExactDay ? undefined : days,
+        exactDay: isExactDay ? days : undefined,
+        maxPerFeed,
+        selectedFeedIds
+      };
+
+      const modeText = isExactDay
+        ? \`do dia \${days} atrás\`
+        : \`dos últimos \${days} dias\`;
+
+      showToast(\`Puxando notícias dos EUA (\${modeText}) com limite de \${maxPerFeed}/canal...\`);
 
       try {
         const res = await fetch('/api/sync-month', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ days, maxPerFeed, selectedFeedIds })
+          body: JSON.stringify(payload)
         });
         const data = await res.json();
         if (data.success) {
@@ -1052,7 +1149,7 @@ export function renderConsoleHTML(): string {
           renderHarvestResults(data);
           await loadData();
         } else {
-          showToast('Erro ao colher feeds.', false);
+          showToast('Erro ao colher feeds: ' + (data.error || ''), false);
         }
       } catch (e) {
         showToast('Falha de rede.', false);
@@ -1068,16 +1165,22 @@ export function renderConsoleHTML(): string {
       const ts = document.getElementById('harvest-result-timestamp');
       const tbody = document.getElementById('harvest-results-table-body');
 
-      title.innerText = \`Puxada Concluída: \${data.totalSaved} notícias adicionadas dos últimos \${data.daysHarvested} dias!\`;
+      const periodDesc = data.exactDay
+        ? \`do dia \${data.exactDay} atrás\`
+        : \`dos últimos \${data.daysHarvested} dias\`;
+
+      title.innerText = \`Puxada Concluída: \${data.totalSaved} notícias adicionadas (\${periodDesc})! As mais recentes já lideram a página principal.\`;
       ts.innerText = new Date().toLocaleTimeString('pt-BR');
 
       tbody.innerHTML = (data.articles || []).map(a => \`
         <tr class="hover:bg-slate-800/30">
-          <td class="py-2.5 px-3 font-serif font-bold text-slate-100 max-w-md truncate">\${a.title}</td>
+          <td class="py-2.5 px-3 font-serif font-bold text-slate-100 max-w-md truncate">
+            <a href="/news/\${a.slug}" target="_blank" class="hover:text-cyan-400 transition">\${a.title}</a>
+          </td>
           <td class="py-2.5 px-3"><span class="bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded text-[9px] uppercase font-mono">\${a.category}</span></td>
           <td class="py-2.5 px-3 text-slate-400">\${a.author?.role || 'Wire Desk'}</td>
           <td class="py-2.5 px-3 text-right">
-            <a href="/news/\${a.slug}" target="_blank" class="text-cyan-400 hover:underline font-bold">Ver Matéria ↗</a>
+            <a href="/news/\${a.slug}" target="_blank" class="text-cyan-400 hover:underline font-bold inline-flex items-center gap-1">Ver no Portal <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>
           </td>
         </tr>
       \`).join('');

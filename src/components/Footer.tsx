@@ -259,11 +259,6 @@ export default function Footer() {
                   Robots.txt
                 </Link>
               </li>
-              <li>
-                <Link href="/admin" className="text-neutral-500 hover:text-neutral-300 transition">
-                  Editorial Admin Panel
-                </Link>
-              </li>
             </ul>
           </div>
         </div>

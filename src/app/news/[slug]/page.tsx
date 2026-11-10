@@ -14,6 +14,9 @@ import ArticleCard from '@/components/ArticleCard';
 import TrendingSidebar from '@/components/TrendingSidebar';
 import NewsImage from '@/components/NewsImage';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }

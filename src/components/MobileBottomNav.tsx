@@ -8,9 +8,7 @@ import {
   Flame,
   Search,
   LayoutGrid,
-  Sliders,
   X,
-  ExternalLink,
   ChevronRight,
   ShieldAlert,
 } from 'lucide-react';
@@ -78,17 +76,6 @@ export default function MobileBottomNav() {
 
               {/* Direct Quick Links */}
               <div className="pt-3 border-t border-neutral-800 space-y-2 text-xs">
-                <a
-                  href="/admin"
-                  className="flex items-center justify-between p-2.5 rounded-lg bg-amber-950/40 border border-amber-600/40 text-amber-400 font-bold"
-                  onClick={() => setSectionsOpen(false)}
-                >
-                  <span className="flex items-center gap-2">
-                    <Sliders className="w-4 h-4" /> Painel Executivo
-                  </span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-
                 <div className="grid grid-cols-2 gap-2 text-neutral-400 text-[11px] pt-1">
                   <Link
                     href="/newsletters"
@@ -117,7 +104,7 @@ export default function MobileBottomNav() {
         className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white/95 backdrop-blur-md border-t border-neutral-200 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] px-2 py-1.5"
         style={{ paddingBottom: 'max(0.375rem, env(safe-area-inset-bottom))' }}
       >
-        <div className="grid grid-cols-5 items-center justify-around text-center">
+        <div className="grid grid-cols-4 items-center justify-around text-center">
           {/* Home */}
           <Link
             href="/"
@@ -169,16 +156,6 @@ export default function MobileBottomNav() {
             <Search className="w-5 h-5 mb-0.5" />
             <span className="text-[10px] tracking-tight">Search</span>
           </Link>
-
-          {/* Admin Panel */}
-          <a
-            href="/admin"
-            className="flex flex-col items-center justify-center py-1 px-1 rounded text-amber-600 hover:text-amber-700 transition"
-            title="Console Admin"
-          >
-            <Sliders className="w-5 h-5 mb-0.5" />
-            <span className="text-[10px] tracking-tight font-bold">Admin</span>
-          </a>
         </div>
       </nav>
     </>

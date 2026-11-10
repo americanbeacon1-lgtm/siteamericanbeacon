@@ -188,13 +188,19 @@ function generateCleanSlug(title: string): string {
 
 export interface FetchOptions {
   maxItems?: number;
-  daysBack?: number; // e.g. 30 for 1 month of news
+  daysBack?: number; // e.g. 1 to 10, or 30 days
+  exactDay?: number; // e.g. 1 (last 24h), 2 (24-48h ago), ..., 10
 }
 
 export async function fetchFromFeed(feed: NewsFeedSource, options?: FetchOptions): Promise<Article[]> {
   const maxItems = options?.maxItems || 40;
-  const daysBack = options?.daysBack !== undefined ? options.daysBack : 30; // default to 30 days
-  const cutoffDate = new Date(Date.now() - daysBack * 24 * 60 * 60 * 1000);
+  const daysBack = options?.daysBack !== undefined ? options.daysBack : 10;
+  const exactDay = options?.exactDay;
+
+  const nowMs = Date.now();
+  const cutoffDate = new Date(nowMs - daysBack * 24 * 60 * 60 * 1000);
+  const exactDayStart = exactDay !== undefined ? new Date(nowMs - exactDay * 24 * 60 * 60 * 1000) : null;
+  const exactDayEnd = exactDay !== undefined ? new Date(nowMs - (exactDay - 1) * 24 * 60 * 60 * 1000) : null;
 
   try {
     const controller = new AbortController();
@@ -250,9 +256,15 @@ export async function fetchFromFeed(feed: NewsFeedSource, options?: FetchOptions
       const pubDate = item.pubDate || item.published || item.updated;
       const parsedDate = pubDate ? new Date(pubDate) : new Date();
 
-      // Check if within the requested daysBack window (e.g. 30 days)
-      if (daysBack > 0 && !isNaN(parsedDate.getTime()) && parsedDate < cutoffDate) {
-        continue;
+      // Check if within the requested date window or exact day
+      if (!isNaN(parsedDate.getTime())) {
+        if (exactDayStart && exactDayEnd) {
+          if (parsedDate < exactDayStart || parsedDate > exactDayEnd) {
+            continue;
+          }
+        } else if (daysBack > 0 && parsedDate < cutoffDate) {
+          continue;
+        }
       }
 
       const validDate = !isNaN(parsedDate.getTime()) ? parsedDate.toISOString() : new Date().toISOString();
@@ -355,16 +367,19 @@ export async function fetchFromFeed(feed: NewsFeedSource, options?: FetchOptions
 export async function syncAllFeeds(options?: {
   selectedFeedIds?: string[];
   maxPerFeed?: number;
-  daysBack?: number; // 30 = full month
+  daysBack?: number;
+  exactDay?: number;
 }): Promise<{
   totalFetched: number;
   totalSaved: number;
   feedsProcessed: number;
   articles: Article[];
   daysBack: number;
+  exactDay?: number;
 }> {
-  const maxPerFeed = options?.maxPerFeed || 30; // High limit to get full month
-  const daysBack = options?.daysBack !== undefined ? options.daysBack : 30; // Default: last 30 days / 1 month
+  const maxPerFeed = options?.maxPerFeed || 30;
+  const daysBack = options?.daysBack !== undefined ? options.daysBack : 10;
+  const exactDay = options?.exactDay;
 
   const targetFeeds = options?.selectedFeedIds
     ? US_NEWS_FEEDS.filter((f) => options.selectedFeedIds?.includes(f.id))
@@ -374,7 +389,7 @@ export async function syncAllFeeds(options?: {
   const newlySaved: Article[] = [];
 
   for (const feed of targetFeeds) {
-    const fetched = await fetchFromFeed(feed, { maxItems: maxPerFeed, daysBack });
+    const fetched = await fetchFromFeed(feed, { maxItems: maxPerFeed, daysBack, exactDay });
     for (const art of fetched) {
       try {
         db.saveArticle(art);
@@ -398,5 +413,6 @@ export async function syncAllFeeds(options?: {
     feedsProcessed: targetFeeds.length,
     articles: newlySaved,
     daysBack,
+    exactDay,
   };
 }

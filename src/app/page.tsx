@@ -7,12 +7,14 @@ import ArticleCard from '@/components/ArticleCard';
 import AdBanner from '@/components/AdBanner';
 import TrendingSidebar from '@/components/TrendingSidebar';
 
-export const revalidate = 60; // Refresh data every 60 seconds
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function HomePage() {
   const allArticles = db.getArticles();
-  const leadArticle = allArticles.find((a) => a.isFeaturedLead) || allArticles[0];
-  const sideLeadArticles = allArticles.filter((a) => a.id !== leadArticle.id).slice(0, 3);
+  // Ensure the newest news always appears first on the homepage
+  const leadArticle = allArticles[0];
+  const sideLeadArticles = allArticles.slice(1, 4);
   const trendingArticles = allArticles.filter((a) => a.isTrending);
   const politicsArticles = db.getArticles({ category: 'politics', limit: 4 });
   const businessFinanceArticles = allArticles.filter((a) => a.category === 'business' || a.category === 'finance').slice(0, 4);

@@ -1,11 +1,17 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { Article, AdSlot, NewsletterSubscriber, SiteSettings, CategorySlug } from '@/types';
 import { SEED_ARTICLES } from '@/data/seed-articles';
 import { CATEGORIES } from '@/data/categories';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'portal-db.json');
+const TMP_DB_FILE = path.join(os.tmpdir ? os.tmpdir() : '/tmp', 'portal-db.json');
+
+declare global {
+  var __BEACON_DB_CACHE__: DatabaseSchema | undefined;
+}
 
 export interface DatabaseSchema {
   articles: Article[];
@@ -160,58 +166,80 @@ const DEFAULT_ADS: AdSlot[] = [
 ];
 
 function ensureDataFile(): DatabaseSchema {
+  if (globalThis.__BEACON_DB_CACHE__) {
+    return globalThis.__BEACON_DB_CACHE__;
+  }
+
+  // 1. Check /tmp on serverless environments
   try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
+    if (fs.existsSync(TMP_DB_FILE)) {
+      const content = fs.readFileSync(TMP_DB_FILE, 'utf8');
+      const parsed = JSON.parse(content) as DatabaseSchema;
+      if (parsed && Array.isArray(parsed.articles) && parsed.articles.length > 0) {
+        globalThis.__BEACON_DB_CACHE__ = parsed;
+        return parsed;
+      }
     }
+  } catch (e) {}
 
-    if (!fs.existsSync(DB_FILE)) {
-      const initialData: DatabaseSchema = {
-        articles: SEED_ARTICLES,
-        adSlots: DEFAULT_ADS,
-        subscribers: [
-          {
-            id: 'sub-01',
-            email: 'executive.reader@nycapital.com',
-            subscribedAt: '2026-11-06T10:00:00Z',
-            edition: 'Morning Dispatch',
-            status: 'active',
-          },
-          {
-            id: 'sub-02',
-            email: 'policy.director@dcstrategy.org',
-            subscribedAt: '2026-11-07T08:30:00Z',
-            edition: 'Capitol Hill Insider',
-            status: 'active',
-          },
-        ],
-        settings: DEFAULT_SETTINGS,
-      };
-      fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2), 'utf8');
-      return initialData;
+  // 2. Check local data directory
+  try {
+    if (fs.existsSync(DB_FILE)) {
+      const content = fs.readFileSync(DB_FILE, 'utf8');
+      const parsed = JSON.parse(content) as DatabaseSchema;
+      if (parsed && Array.isArray(parsed.articles) && parsed.articles.length > 0) {
+        globalThis.__BEACON_DB_CACHE__ = parsed;
+        return parsed;
+      }
     }
-
-    const content = fs.readFileSync(DB_FILE, 'utf8');
-    return JSON.parse(content) as DatabaseSchema;
   } catch (error) {
     console.error('Error reading portal database:', error);
-    return {
-      articles: SEED_ARTICLES,
-      adSlots: DEFAULT_ADS,
-      subscribers: [],
-      settings: DEFAULT_SETTINGS,
-    };
   }
+
+  // 3. Fallback to initial seeds
+  const initialData: DatabaseSchema = {
+    articles: SEED_ARTICLES,
+    adSlots: DEFAULT_ADS,
+    subscribers: [
+      {
+        id: 'sub-01',
+        email: 'executive.reader@nycapital.com',
+        subscribedAt: '2026-11-06T10:00:00Z',
+        edition: 'Morning Dispatch',
+        status: 'active',
+      },
+      {
+        id: 'sub-02',
+        email: 'policy.director@dcstrategy.org',
+        subscribedAt: '2026-11-07T08:30:00Z',
+        edition: 'Capitol Hill Insider',
+        status: 'active',
+      },
+    ],
+    settings: DEFAULT_SETTINGS,
+  };
+
+  writeDataFile(initialData);
+  globalThis.__BEACON_DB_CACHE__ = initialData;
+  return initialData;
 }
 
 function writeDataFile(data: DatabaseSchema): void {
+  globalThis.__BEACON_DB_CACHE__ = data;
+
   try {
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf8');
   } catch (error) {
-    console.error('Error saving portal database:', error);
+    // Expected on Vercel / read-only filesystem
+  }
+
+  try {
+    fs.writeFileSync(TMP_DB_FILE, JSON.stringify(data, null, 2), 'utf8');
+  } catch (error) {
+    // Ignored if tmp not writable
   }
 }
 
@@ -261,8 +289,26 @@ export const db = {
   },
 
   getArticleBySlug(slug: string): Article | null {
+    if (!slug) return null;
     const data = ensureDataFile();
-    return data.articles.find((a) => a.slug === slug) || null;
+    const cleanSlug = decodeURIComponent(slug).trim().toLowerCase();
+
+    // 1. Exact match
+    let match = data.articles.find((a) => a.slug === slug);
+    if (match) return match;
+
+    // 2. Case-insensitive decoded slug match
+    match = data.articles.find((a) => a.slug.toLowerCase() === cleanSlug);
+    if (match) return match;
+
+    // 3. Match by ID (in case link passes art-id or wire-id)
+    match = data.articles.find((a) => a.id === slug || a.id.toLowerCase() === cleanSlug);
+    if (match) return match;
+
+    // 4. Normalized slug match ignoring hyphens/punctuation
+    const simplifiedSlug = cleanSlug.replace(/[^a-z0-9]/g, '');
+    match = data.articles.find((a) => a.slug.toLowerCase().replace(/[^a-z0-9]/g, '') === simplifiedSlug);
+    return match || null;
   },
 
   getRelatedArticles(currentSlug: string, category: CategorySlug | string, limit = 4): Article[] {
