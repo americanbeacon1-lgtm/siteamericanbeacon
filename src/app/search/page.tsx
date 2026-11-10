@@ -15,10 +15,14 @@ export const metadata: Metadata = {
   description: 'Search breaking news, political investigations, financial market reports, and editorial essays across The American Beacon.',
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function SearchPage({ searchParams }: PageProps) {
   const { q = '' } = await searchParams;
   const query = q.trim();
 
+  await db.syncLatestArticles();
   const results = query ? db.getArticles({ search: query }) : [];
   const trendingArticles = db.getArticles({ trending: true, limit: 5 });
 

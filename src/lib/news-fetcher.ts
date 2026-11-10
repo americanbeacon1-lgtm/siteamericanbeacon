@@ -2,6 +2,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { db } from '@/lib/db';
 import { Article, CategorySlug } from '@/types';
 import { US_NEWS_FEEDS, NewsFeedSource } from '@/data/news-feeds';
+import { saveRecentArticlesToCloud, saveSingleArticleToCloud } from '@/lib/cloud-store';
 
 export { US_NEWS_FEEDS };
 export type { NewsFeedSource };
@@ -405,6 +406,11 @@ export async function syncAllFeeds(options?: {
     db.updateSettings({
       breakingNewsAlert: newlySaved[0].title,
     });
+    // Persist to shared cloud store so all Vercel serverless lambdas see them immediately
+    saveRecentArticlesToCloud(newlySaved).catch(() => {});
+    for (const art of newlySaved.slice(0, 50)) {
+      saveSingleArticleToCloud(art).catch(() => {});
+    }
   }
 
   return {
@@ -415,4 +421,34 @@ export async function syncAllFeeds(options?: {
     daysBack,
     exactDay,
   };
+}
+
+export async function findArticleInLiveFeeds(targetSlug: string): Promise<Article | null> {
+  if (!targetSlug) return null;
+  const cleanTarget = decodeURIComponent(targetSlug).toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+  if (!cleanTarget) return null;
+
+  // Search across prominent feeds for matching story
+  const searchFeeds = US_NEWS_FEEDS.slice(0, 16);
+  for (const feed of searchFeeds) {
+    try {
+      const items = await fetchFromFeed(feed, { maxItems: 30, daysBack: 15 });
+      for (const art of items) {
+        const slugNorm = art.slug.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const titleNorm = art.title.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (
+          slugNorm === cleanTarget ||
+          slugNorm.includes(cleanTarget) ||
+          cleanTarget.includes(slugNorm) ||
+          titleNorm.includes(cleanTarget) ||
+          cleanTarget.includes(titleNorm)
+        ) {
+          db.saveArticle(art);
+          saveSingleArticleToCloud(art).catch(() => {});
+          return art;
+        }
+      }
+    } catch (e) {}
+  }
+  return null;
 }

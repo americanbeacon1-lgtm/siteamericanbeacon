@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { syncAllFeeds } from '@/lib/news-fetcher';
+import { saveRecentArticlesToCloud, saveSingleArticleToCloud } from '@/lib/cloud-store';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +15,13 @@ export async function POST(req: NextRequest) {
       maxPerFeed: Number(maxPerFeed) || 35,
       selectedFeedIds,
     });
+
+    if (result.articles && result.articles.length > 0) {
+      await saveRecentArticlesToCloud(result.articles);
+      for (const art of result.articles.slice(0, 50)) {
+        saveSingleArticleToCloud(art).catch(() => {});
+      }
+    }
 
     const periodDescription = result.exactDay
       ? `do dia ${result.exactDay} atrás`

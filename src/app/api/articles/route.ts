@@ -9,6 +9,7 @@ export async function GET(req: NextRequest) {
   const search = searchParams.get('search');
   const limit = parseInt(searchParams.get('limit') || '100', 10);
 
+  await db.syncLatestArticles();
   let articles = db.getArticles();
 
   if (category) {

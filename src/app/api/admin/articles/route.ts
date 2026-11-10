@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
+  await db.syncLatestArticles();
   const articles = db.getArticles();
   return NextResponse.json(articles);
 }

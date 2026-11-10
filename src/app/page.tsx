@@ -11,6 +11,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function HomePage() {
+  await db.syncLatestArticles();
   const allArticles = db.getArticles();
   // Ensure the newest news always appears first on the homepage
   const leadArticle = allArticles[0];

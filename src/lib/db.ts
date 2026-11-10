@@ -4,6 +4,11 @@ import os from 'os';
 import { Article, AdSlot, NewsletterSubscriber, SiteSettings, CategorySlug } from '@/types';
 import { SEED_ARTICLES } from '@/data/seed-articles';
 import { CATEGORIES } from '@/data/categories';
+import {
+  fetchRecentArticlesFromCloud,
+  fetchSingleArticleFromCloud,
+  saveSingleArticleToCloud,
+} from '@/lib/cloud-store';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'portal-db.json');
@@ -378,7 +383,65 @@ export const db = {
 
     data.articles.unshift(newArticle);
     writeDataFile(data);
+    saveSingleArticleToCloud(newArticle).catch(() => {});
     return newArticle;
+  },
+
+  async syncLatestArticles(): Promise<void> {
+    try {
+      const cloudArticles = await fetchRecentArticlesFromCloud();
+      if (cloudArticles && cloudArticles.length > 0) {
+        const data = ensureDataFile();
+        const existingIds = new Set(data.articles.map((a) => a.id));
+        const existingSlugs = new Set(data.articles.map((a) => a.slug.toLowerCase()));
+
+        let added = 0;
+        for (const art of cloudArticles) {
+          if (!existingIds.has(art.id) && !existingSlugs.has(art.slug.toLowerCase())) {
+            data.articles.unshift(art);
+            existingIds.add(art.id);
+            existingSlugs.add(art.slug.toLowerCase());
+            added++;
+          }
+        }
+        if (added > 0) {
+          writeDataFile(data);
+        }
+      }
+    } catch (e) {
+      console.warn('[DB] syncLatestArticles error:', e);
+    }
+  },
+
+  async findArticleBySlug(slug: string): Promise<Article | null> {
+    if (!slug) return null;
+
+    // 1. Check local in-memory/file articles
+    const local = this.getArticleBySlug(slug);
+    if (local) return local;
+
+    // 2. Direct lookup in cloud key-value store (instant)
+    try {
+      const cloudDirect = await fetchSingleArticleFromCloud(slug);
+      if (cloudDirect) {
+        this.saveArticle(cloudDirect);
+        return cloudDirect;
+      }
+    } catch (e) {}
+
+    // 3. Sync recent cloud articles and re-check
+    await this.syncLatestArticles();
+    const afterSync = this.getArticleBySlug(slug);
+    if (afterSync) return afterSync;
+
+    // 4. Live feed deep resolver fallback (prevents false 404 for newly extracted wire items)
+    try {
+      const { findArticleInLiveFeeds } = await import('@/lib/news-fetcher');
+      const liveArticle = await findArticleInLiveFeeds(slug);
+      if (liveArticle) return liveArticle;
+    } catch (e) {}
+
+    return null;
   },
 
   deleteArticle(id: string): boolean {

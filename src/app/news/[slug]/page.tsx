@@ -23,27 +23,39 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = db.getArticleBySlug(slug);
+  const article = await db.findArticleBySlug(slug);
   if (!article) return { title: 'Article Not Found | The American Beacon' };
+
+  const authorName =
+    typeof article.author === 'object' && article.author?.name
+      ? article.author.name
+      : typeof article.author === 'string'
+      ? article.author
+      : 'The American Beacon Staff';
+
+  const authorTwitter =
+    typeof article.author === 'object' && article.author?.twitter
+      ? article.author.twitter
+      : '@AmericanBeacon';
 
   return {
     title: `${article.title} | The American Beacon`,
-    description: article.subtitle,
-    keywords: article.tags,
-    authors: [{ name: article.author.name }],
+    description: article.subtitle || article.title,
+    keywords: Array.isArray(article.tags) ? article.tags : ['Breaking News', 'U.S. News'],
+    authors: [{ name: authorName }],
     openGraph: {
       title: article.title,
-      description: article.subtitle,
+      description: article.subtitle || article.title,
       url: `https://americanbeacon.com/news/${article.slug}`,
       type: 'article',
-      publishedTime: article.publishedAt,
-      modifiedTime: article.updatedAt,
-      authors: [article.author.name],
-      section: article.category,
-      tags: article.tags,
+      publishedTime: article.publishedAt || new Date().toISOString(),
+      modifiedTime: article.updatedAt || new Date().toISOString(),
+      authors: [authorName],
+      section: article.category || 'us-news',
+      tags: Array.isArray(article.tags) ? article.tags : [],
       images: [
         {
-          url: article.imageUrl,
+          url: article.imageUrl || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=1200&q=80',
           width: 1200,
           height: 630,
           alt: article.title,
@@ -53,20 +65,42 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     twitter: {
       card: 'summary_large_image',
       title: article.title,
-      description: article.subtitle,
-      images: [article.imageUrl],
-      creator: article.author.twitter || '@AmericanBeacon',
+      description: article.subtitle || article.title,
+      images: [article.imageUrl || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=1200&q=80'],
+      creator: authorTwitter,
     },
   };
 }
 
 export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params;
-  const article = db.getArticleBySlug(slug);
+  const article = await db.findArticleBySlug(slug);
 
   if (!article) {
     notFound();
   }
+
+  // Guaranteed safe author object
+  const safeAuthor = {
+    id: typeof article.author === 'object' && article.author?.id ? article.author.id : 'auth-01',
+    name:
+      typeof article.author === 'object' && article.author?.name
+        ? article.author.name
+        : typeof article.author === 'string'
+        ? article.author
+        : 'The American Beacon Staff',
+    role: typeof article.author === 'object' && article.author?.role ? article.author.role : 'National Newsroom Desk',
+    avatar:
+      typeof article.author === 'object' && article.author?.avatar
+        ? article.author.avatar
+        : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
+    email: typeof article.author === 'object' && article.author?.email ? article.author.email : 'newsroom@americanbeacon.com',
+    bio:
+      typeof article.author === 'object' && article.author?.bio
+        ? article.author.bio
+        : 'The American Beacon national reporting staff provides verified dispatches from Washington, New York, and regional bureaus.',
+    twitter: typeof article.author === 'object' && article.author?.twitter ? article.author.twitter : '@AmericanBeacon',
+  };
 
   // Increment view counter
   db.incrementViews(article.id);
@@ -81,14 +115,14 @@ export default async function ArticlePage({ params }: PageProps) {
   const cornerRightAd = db.getAdByPosition('corner_right');
   const cornerFloatingAd = db.getAdByPosition('corner_floating');
 
-  const formattedPublishDate = new Date(article.publishedAt).toLocaleDateString('en-US', {
+  const formattedPublishDate = new Date(article.publishedAt || Date.now()).toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
     year: 'numeric',
   });
 
-  const formattedTime = new Date(article.publishedAt).toLocaleTimeString('en-US', {
+  const formattedTime = new Date(article.publishedAt || Date.now()).toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
     timeZoneName: 'short',
@@ -104,14 +138,14 @@ export default async function ArticlePage({ params }: PageProps) {
     },
     headline: article.title,
     description: article.subtitle,
-    image: [article.imageUrl],
+    image: [article.imageUrl || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=1200&q=80'],
     datePublished: article.publishedAt,
     dateModified: article.updatedAt,
     author: {
       '@type': 'Person',
-      name: article.author.name,
-      jobTitle: article.author.role,
-      url: `https://americanbeacon.com/authors/${article.author.id}`,
+      name: safeAuthor.name,
+      jobTitle: safeAuthor.role,
+      url: `https://americanbeacon.com/authors/${safeAuthor.id}`,
     },
     publisher: {
       '@type': 'NewsMediaOrganization',
@@ -122,7 +156,7 @@ export default async function ArticlePage({ params }: PageProps) {
       },
     },
     articleSection: categoryInfo?.name || article.category,
-    keywords: article.tags.join(', '),
+    keywords: Array.isArray(article.tags) ? article.tags.join(', ') : 'U.S. News, Breaking News',
   };
 
   return (
@@ -184,15 +218,15 @@ export default async function ArticlePage({ params }: PageProps) {
             <div className="flex items-center gap-3">
               <div className="relative w-11 h-11 rounded-full overflow-hidden border border-neutral-200 shrink-0">
                 <Image
-                  src={article.author.avatar}
-                  alt={article.author.name}
+                  src={safeAuthor.avatar}
+                  alt={safeAuthor.name}
                   fill
                   className="object-cover"
                 />
               </div>
               <div>
-                <p className="font-bold text-neutral-950 text-sm">{article.author.name}</p>
-                <p className="text-neutral-500">{article.author.role}</p>
+                <p className="font-bold text-neutral-950 text-sm">{safeAuthor.name}</p>
+                <p className="text-neutral-500">{safeAuthor.role}</p>
               </div>
             </div>
 
@@ -290,30 +324,30 @@ export default async function ArticlePage({ params }: PageProps) {
             <div className="bg-neutral-100 rounded-lg p-6 my-8 flex flex-col sm:flex-row items-center sm:items-start gap-5">
               <div className="relative w-16 h-16 rounded-full overflow-hidden shrink-0 border-2 border-white shadow-xs">
                 <Image
-                  src={article.author.avatar}
-                  alt={article.author.name}
+                  src={safeAuthor.avatar}
+                  alt={safeAuthor.name}
                   fill
                   className="object-cover"
                 />
               </div>
               <div className="space-y-1 text-center sm:text-left">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                  <h4 className="font-serif text-lg font-bold text-neutral-900">{article.author.name}</h4>
-                  <span className="text-xs font-semibold text-red-700">{article.author.role}</span>
+                  <h4 className="font-serif text-lg font-bold text-neutral-900">{safeAuthor.name}</h4>
+                  <span className="text-xs font-semibold text-red-700">{safeAuthor.role}</span>
                 </div>
-                <p className="text-xs text-neutral-600 leading-relaxed">{article.author.bio}</p>
+                <p className="text-xs text-neutral-600 leading-relaxed">{safeAuthor.bio}</p>
                 <div className="pt-2 text-xs flex items-center justify-center sm:justify-start gap-4 text-neutral-500">
-                  <a href={`mailto:${article.author.email}`} className="hover:text-red-700 underline">
-                    {article.author.email}
+                  <a href={`mailto:${safeAuthor.email}`} className="hover:text-red-700 underline">
+                    {safeAuthor.email}
                   </a>
-                  {article.author.twitter && (
+                  {safeAuthor.twitter && (
                     <a
-                      href={`https://twitter.com/${article.author.twitter.replace('@', '')}`}
+                      href={`https://twitter.com/${safeAuthor.twitter.replace('@', '')}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:text-neutral-900 font-semibold"
                     >
-                      {article.author.twitter}
+                      {safeAuthor.twitter}
                     </a>
                   )}
                 </div>

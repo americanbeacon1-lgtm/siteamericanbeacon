@@ -9,6 +9,9 @@ import ArticleCard from '@/components/ArticleCard';
 import AdBanner from '@/components/AdBanner';
 import TrendingSidebar from '@/components/TrendingSidebar';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -44,6 +47,7 @@ export default async function CategoryPage({ params }: PageProps) {
     notFound();
   }
 
+  await db.syncLatestArticles();
   const categoryArticles = db.getArticles({ category: category.slug });
   const trendingArticles = db.getArticles({ trending: true, limit: 5 });
   const headerAd = db.getAdByPosition('header');

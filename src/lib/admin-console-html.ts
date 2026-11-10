@@ -1175,12 +1175,12 @@ export function renderConsoleHTML(): string {
       tbody.innerHTML = (data.articles || []).map(a => \`
         <tr class="hover:bg-slate-800/30">
           <td class="py-2.5 px-3 font-serif font-bold text-slate-100 max-w-md truncate">
-            <a href="/news/\${a.slug}" target="_blank" class="hover:text-cyan-400 transition">\${a.title}</a>
+            <a href="/news/\${encodeURIComponent(a.slug)}" target="_blank" class="hover:text-cyan-400 transition">\${a.title}</a>
           </td>
           <td class="py-2.5 px-3"><span class="bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded text-[9px] uppercase font-mono">\${a.category}</span></td>
           <td class="py-2.5 px-3 text-slate-400">\${a.author?.role || 'Wire Desk'}</td>
           <td class="py-2.5 px-3 text-right">
-            <a href="/news/\${a.slug}" target="_blank" class="text-cyan-400 hover:underline font-bold inline-flex items-center gap-1">Ver no Portal <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>
+            <a href="/news/\${encodeURIComponent(a.slug)}" target="_blank" class="text-cyan-400 hover:underline font-bold inline-flex items-center gap-1">Ver no Portal <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>
           </td>
         </tr>
       \`).join('');
