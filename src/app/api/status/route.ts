@@ -5,6 +5,7 @@ import { US_NEWS_FEEDS } from '@/data/news-feeds';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  await db.syncLatestArticles();
   const articles = db.getArticles();
   const subscribers = db.getSubscribers();
   const adSlots = db.getAdSlots();

@@ -283,8 +283,25 @@ export const db = {
       );
     }
 
-    // Sort by publication date descending
-    result.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+    // Sort primarily by extraction recency, then publication date
+    result.sort((a, b) => {
+      const updA = new Date(a.updatedAt || a.publishedAt).getTime();
+      const updB = new Date(b.updatedAt || b.publishedAt).getTime();
+      const pubA = new Date(a.publishedAt).getTime();
+      const pubB = new Date(b.publishedAt).getTime();
+
+      const dayA = Math.floor(updA / (24 * 60 * 60 * 1000));
+      const dayB = Math.floor(updB / (24 * 60 * 60 * 1000));
+      if (dayA !== dayB) {
+        return dayB - dayA;
+      }
+
+      if (!isNaN(pubA) && !isNaN(pubB) && pubA !== pubB) {
+        return pubB - pubA;
+      }
+
+      return updB - updA;
+    });
 
     if (filter?.limit) {
       result = result.slice(0, filter.limit);

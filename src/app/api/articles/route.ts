@@ -7,7 +7,8 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const category = searchParams.get('category');
   const search = searchParams.get('search');
-  const limit = parseInt(searchParams.get('limit') || '100', 10);
+  const limitParam = searchParams.get('limit');
+  const limit = limitParam ? parseInt(limitParam, 10) : 5000;
 
   await db.syncLatestArticles();
   let articles = db.getArticles();

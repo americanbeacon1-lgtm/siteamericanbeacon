@@ -6,10 +6,26 @@ let lastFetchTime = 0;
 let cachedCloudArticles: Article[] = [];
 const CACHE_TTL_MS = 15000; // 15 seconds memory cache
 
-export async function saveRecentArticlesToCloud(articles: Article[]): Promise<boolean> {
-  if (!articles || articles.length === 0) return false;
+export async function saveRecentArticlesToCloud(newArticles: Article[]): Promise<boolean> {
+  if (!newArticles || newArticles.length === 0) return false;
   try {
-    const payload = articles.slice(0, 150); // Store up to 150 freshest articles
+    const existing = await fetchRecentArticlesFromCloud();
+    const map = new Map<string, Article>();
+
+    // Put new articles first
+    for (const art of newArticles) {
+      if (art && art.slug) {
+        map.set(art.slug.toLowerCase(), art);
+      }
+    }
+    // Then existing articles
+    for (const art of existing) {
+      if (art && art.slug && !map.has(art.slug.toLowerCase())) {
+        map.set(art.slug.toLowerCase(), art);
+      }
+    }
+
+    const payload = Array.from(map.values()).slice(0, 300);
     const ctrl = new AbortController();
     const timeout = setTimeout(() => ctrl.abort(), 4000);
 
@@ -20,6 +36,9 @@ export async function saveRecentArticlesToCloud(articles: Article[]): Promise<bo
       signal: ctrl.signal,
     });
     clearTimeout(timeout);
+
+    cachedCloudArticles = payload;
+    lastFetchTime = Date.now();
     return res.ok;
   } catch (error) {
     console.warn('[CloudStore] Failed to save recent articles:', error);

@@ -6,6 +6,7 @@ import { db } from '@/lib/db';
 import ArticleCard from '@/components/ArticleCard';
 import AdBanner from '@/components/AdBanner';
 import TrendingSidebar from '@/components/TrendingSidebar';
+import LatestNewsFeed from '@/components/LatestNewsFeed';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -76,6 +77,13 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* 2.5 ALL RECENT EXTRACTED WIRE DISPATCHES (Continuous Stream) */}
+      <LatestNewsFeed
+        articles={allArticles.slice(1)}
+        title="Plantão de Notícias Recentes dos Estados Unidos"
+        subtitle="Role para baixo para visualizar todas as matérias extraídas e atualizadas dos maiores veículos de imprensa dos EUA em ordem cronológica."
+      />
 
       {/* 3. IN-DEPTH: ARTIFICIAL INTELLIGENCE & TECH FRONTIER */}
       <section className="pt-2">

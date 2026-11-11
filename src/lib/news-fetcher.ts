@@ -339,7 +339,7 @@ export async function fetchFromFeed(feed: NewsFeedSource, options?: FetchOptions
           twitter: `@${feed.outlet.replace(/[^a-zA-Z]/g, '')}`,
         },
         publishedAt: validDate,
-        updatedAt: validDate,
+        updatedAt: new Date().toISOString(),
         readTimeMinutes: Math.max(3, Math.round(cleanDesc.length / 250) + 2),
         isFeaturedLead: false,
         isBreaking: feed.category === 'breaking-news',

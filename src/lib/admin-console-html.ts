@@ -946,14 +946,14 @@ export function renderConsoleHTML(): string {
       try {
         const [statusRes, artRes, feedsRes, adsRes, subsRes, setRes] = await Promise.all([
           fetch('/api/status').then(r => r.json()),
-          fetch('/api/articles').then(r => r.json()),
+          fetch('/api/articles?limit=5000').then(r => r.json()),
           fetch('/api/feeds').then(r => r.json()),
           fetch('/api/ads').then(r => r.json()),
           fetch('/api/subscribers').then(r => r.json()),
           fetch('/api/settings').then(r => r.json()),
         ]);
 
-        appArticles = artRes;
+        appArticles = Array.isArray(artRes) ? artRes : [];
         appFeeds = feedsRes;
         appAds = adsRes;
         appSettings = setRes;
@@ -1102,6 +1102,20 @@ export function renderConsoleHTML(): string {
         if (data.success) {
           showToast(data.message);
           renderHarvestResults(data);
+          if (Array.isArray(data.articles) && data.articles.length > 0) {
+            const existingIds = new Set(appArticles.map(a => a.id));
+            for (const newArt of data.articles) {
+              if (!existingIds.has(newArt.id)) {
+                appArticles.unshift(newArt);
+                existingIds.add(newArt.id);
+              }
+            }
+            const countEl = document.getElementById('metric-art-count');
+            const sideEl = document.getElementById('sidebar-art-count');
+            if (countEl) countEl.innerText = appArticles.length;
+            if (sideEl) sideEl.innerText = appArticles.length;
+            renderArticlesTable(appArticles);
+          }
           await loadData();
         } else {
           showToast('Erro ao sincronizar notícias.', false);
@@ -1147,6 +1161,20 @@ export function renderConsoleHTML(): string {
         if (data.success) {
           showToast(data.message);
           renderHarvestResults(data);
+          if (Array.isArray(data.articles) && data.articles.length > 0) {
+            const existingIds = new Set(appArticles.map(a => a.id));
+            for (const newArt of data.articles) {
+              if (!existingIds.has(newArt.id)) {
+                appArticles.unshift(newArt);
+                existingIds.add(newArt.id);
+              }
+            }
+            const countEl = document.getElementById('metric-art-count');
+            const sideEl = document.getElementById('sidebar-art-count');
+            if (countEl) countEl.innerText = appArticles.length;
+            if (sideEl) sideEl.innerText = appArticles.length;
+            renderArticlesTable(appArticles);
+          }
           await loadData();
         } else {
           showToast('Erro ao colher feeds: ' + (data.error || ''), false);
