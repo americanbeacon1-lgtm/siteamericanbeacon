@@ -30,7 +30,7 @@ const DEFAULT_SETTINGS: SiteSettings = {
   tagline: 'The Voice of the Republic • Independent Journalism & Global Intelligence',
   description: 'The American Beacon delivers authoritative, independent breaking news, financial intelligence, political analysis, and investigative journalism for the United States.',
   editorialBureau: 'National Press Building, 529 14th St NW, Washington, D.C. 20045',
-  contactEmail: 'editor@americanbeacon.com',
+  contactEmail: 'americanbeacon@americanbeacon.online',
   phone: '+1 (202) 555-0192',
   address: 'Washington, D.C. • New York • San Francisco • London',
   googleAnalyticsId: 'G-ABN2026US99',
@@ -181,6 +181,10 @@ function ensureDataFile(): DatabaseSchema {
       const content = fs.readFileSync(TMP_DB_FILE, 'utf8');
       const parsed = JSON.parse(content) as DatabaseSchema;
       if (parsed && Array.isArray(parsed.articles) && parsed.articles.length > 0) {
+        if (!parsed.settings) parsed.settings = { ...DEFAULT_SETTINGS };
+        if (!parsed.settings.contactEmail || parsed.settings.contactEmail.includes('americanbeacon.com')) {
+          parsed.settings.contactEmail = DEFAULT_SETTINGS.contactEmail;
+        }
         globalThis.__BEACON_DB_CACHE__ = parsed;
         return parsed;
       }
@@ -193,6 +197,10 @@ function ensureDataFile(): DatabaseSchema {
       const content = fs.readFileSync(DB_FILE, 'utf8');
       const parsed = JSON.parse(content) as DatabaseSchema;
       if (parsed && Array.isArray(parsed.articles) && parsed.articles.length > 0) {
+        if (!parsed.settings) parsed.settings = { ...DEFAULT_SETTINGS };
+        if (!parsed.settings.contactEmail || parsed.settings.contactEmail.includes('americanbeacon.com')) {
+          parsed.settings.contactEmail = DEFAULT_SETTINGS.contactEmail;
+        }
         globalThis.__BEACON_DB_CACHE__ = parsed;
         return parsed;
       }
@@ -378,7 +386,7 @@ export const db = {
         name: 'The American Beacon Staff',
         role: 'National Newsroom Desk',
         avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
-        email: 'newsroom@americanbeacon.com',
+        email: 'americanbeacon@americanbeacon.online',
         bio: 'The American Beacon national reporting staff provides verified dispatches from Washington, New York, and regional bureaus.',
       },
       publishedAt: articleData.publishedAt || now,

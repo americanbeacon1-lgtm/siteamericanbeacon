@@ -48,7 +48,7 @@ export default function PrivacyPolicyPage() {
         <ul>
           <li><strong>Right to Know:</strong> You have the right to request disclosure of the categories and specific pieces of personal information collected over the preceding 12 months.</li>
           <li><strong>Right to Delete:</strong> You have the right to request deletion of personal information collected from you.</li>
-          <li><strong>Right to Opt-Out:</strong> We do not sell your personal data for monetary consideration. For programmatic ad sharing, you may exercise your &quot;Do Not Sell or Share My Personal Information&quot; right by emailing privacy@americanbeacon.com.</li>
+          <li><strong>Right to Opt-Out:</strong> We do not sell your personal data for monetary consideration. For programmatic ad sharing, you may exercise your &quot;Do Not Sell or Share My Personal Information&quot; right by emailing americanbeacon@americanbeacon.online.</li>
           <li><strong>Right to Non-Discrimination:</strong> We will never discriminate against any reader for exercising privacy rights.</li>
         </ul>
 
@@ -65,7 +65,7 @@ export default function PrivacyPolicyPage() {
           <strong>The American Beacon Publishing Group Inc.</strong><br />
           Attention: Privacy Officer<br />
           529 14th Street NW, Suite 800, Washington, D.C. 20045<br />
-          Email: <a href="mailto:privacy@americanbeacon.com" className="text-red-700 underline">privacy@americanbeacon.com</a>
+          Email: <a href="mailto:americanbeacon@americanbeacon.online" className="text-red-700 underline">americanbeacon@americanbeacon.online</a>
         </p>
       </div>
     </div>

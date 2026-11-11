@@ -334,7 +334,7 @@ export async function fetchFromFeed(feed: NewsFeedSource, options?: FetchOptions
           name: typeof authorName === 'string' ? authorName.replace(/^By\s+/i, '') : `${feed.outlet} Staff`,
           role: feed.defaultAuthorRole,
           avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
-          email: `wire@americanbeacon.com`,
+          email: `americanbeacon@americanbeacon.online`,
           bio: `Special correspondent for ${feed.outlet} reporting on national policy, markets, and investigative affairs.`,
           twitter: `@${feed.outlet.replace(/[^a-zA-Z]/g, '')}`,
         },

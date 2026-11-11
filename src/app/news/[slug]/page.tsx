@@ -94,7 +94,7 @@ export default async function ArticlePage({ params }: PageProps) {
       typeof article.author === 'object' && article.author?.avatar
         ? article.author.avatar
         : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
-    email: typeof article.author === 'object' && article.author?.email ? article.author.email : 'newsroom@americanbeacon.com',
+    email: typeof article.author === 'object' && article.author?.email ? article.author.email : 'americanbeacon@americanbeacon.online',
     bio:
       typeof article.author === 'object' && article.author?.bio
         ? article.author.bio
@@ -300,8 +300,8 @@ export default async function ArticlePage({ params }: PageProps) {
               </ul>
               <p className="text-[11px] text-neutral-500 pt-1">
                 For corrections or inquiries regarding this reporting, contact our standards editor at{' '}
-                <a href="mailto:corrections@americanbeacon.com" className="text-red-700 underline">
-                  corrections@americanbeacon.com
+                <a href="mailto:americanbeacon@americanbeacon.online" className="text-red-700 underline">
+                  americanbeacon@americanbeacon.online
                 </a>.
               </p>
             </div>

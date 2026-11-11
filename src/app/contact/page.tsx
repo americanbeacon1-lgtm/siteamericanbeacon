@@ -16,6 +16,9 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
+    const subject = encodeURIComponent(`[${formData.department.toUpperCase()}] ${formData.subject}`);
+    const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\nDepartment: ${formData.department}\n\nMessage:\n${formData.message}`);
+    window.open(`mailto:americanbeacon@americanbeacon.online?subject=${subject}&body=${body}`, '_blank');
   };
 
   return (
@@ -54,7 +57,9 @@ export default function ContactPage() {
             </div>
             <div className="flex items-center gap-2.5">
               <Mail className="w-4 h-4 text-red-700 shrink-0" />
-              <p>newsroom@americanbeacon.com</p>
+              <a href="mailto:americanbeacon@americanbeacon.online" className="font-semibold text-neutral-900 hover:text-red-700 underline">
+                americanbeacon@americanbeacon.online
+              </a>
             </div>
           </div>
 
@@ -65,19 +70,27 @@ export default function ContactPage() {
             <div className="space-y-2">
               <div>
                 <p className="font-bold text-neutral-900">Confidential News Tips:</p>
-                <p className="text-neutral-500">tips@americanbeacon.com</p>
+                <a href="mailto:americanbeacon@americanbeacon.online?subject=Confidential%20News%20Tip" className="text-neutral-600 hover:text-red-700 underline">
+                  americanbeacon@americanbeacon.online
+                </a>
               </div>
               <div>
                 <p className="font-bold text-neutral-900">Letters to the Editor:</p>
-                <p className="text-neutral-500">letters@americanbeacon.com</p>
+                <a href="mailto:americanbeacon@americanbeacon.online?subject=Letter%20to%20the%20Editor" className="text-neutral-600 hover:text-red-700 underline">
+                  americanbeacon@americanbeacon.online
+                </a>
               </div>
               <div>
                 <p className="font-bold text-neutral-900">Advertising & Sponsorships:</p>
-                <p className="text-neutral-500">advertising@americanbeacon.com</p>
+                <a href="mailto:gustavomourabarbosagmm@gmail.com?subject=Advertising%20Inquiry%20-%20The%20American%20Beacon" className="text-neutral-600 hover:text-red-700 underline">
+                  gustavomourabarbosagmm@gmail.com
+                </a>
               </div>
               <div>
                 <p className="font-bold text-neutral-900">Syndication & Licensing:</p>
-                <p className="text-neutral-500">licensing@americanbeacon.com</p>
+                <a href="mailto:americanbeacon@americanbeacon.online?subject=Syndication%20Inquiry" className="text-neutral-600 hover:text-red-700 underline">
+                  americanbeacon@americanbeacon.online
+                </a>
               </div>
             </div>
           </div>

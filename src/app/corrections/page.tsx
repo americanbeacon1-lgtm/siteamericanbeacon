@@ -63,7 +63,7 @@ export default function CorrectionsPage() {
         </p>
         <p>
           <strong>Office of Editorial Standards</strong><br />
-          Email: <a href="mailto:corrections@americanbeacon.com" className="text-red-700 underline">corrections@americanbeacon.com</a><br />
+          Email: <a href="mailto:americanbeacon@americanbeacon.online" className="text-red-700 underline">americanbeacon@americanbeacon.online</a><br />
           Please include the article headline, publication date, URL, and the specific factual assertion in dispute along with verifiable primary sources.
         </p>
 
