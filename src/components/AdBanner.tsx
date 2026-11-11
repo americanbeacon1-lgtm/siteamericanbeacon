@@ -107,12 +107,12 @@ export default function AdBanner({ position, adSlot, className = '' }: AdBannerP
       <div className={`fixed bottom-16 sm:bottom-5 right-3 sm:right-5 z-50 w-[calc(100vw-1.5rem)] max-w-xs sm:w-80 bg-white border-2 border-neutral-800 rounded-lg shadow-2xl p-3 transition-all duration-300 animate-fade-in ${className}`}>
         <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-neutral-200 text-[10px] uppercase font-bold text-neutral-500">
           <span className="flex items-center gap-1">
-            <Info className="w-3 h-3 text-red-700" /> SPONSORED DISPATCH
+            <Info className="w-3 h-3 text-red-700" /> PAID ADVERTISEMENT
           </span>
           <button
             onClick={() => setClosed(true)}
-            className="text-neutral-400 hover:text-neutral-900 transition p-0.5"
-            title="Fechar Anúncio"
+            className="text-neutral-400 hover:text-neutral-900 transition p-0.5 cursor-pointer"
+            title="Close advertisement"
           >
             <X className="w-3.5 h-3.5" />
           </button>

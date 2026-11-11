@@ -35,7 +35,7 @@ export const SEED_ARTICLES: Article[] = [
     ],
     imageUrl: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1600&q=80',
     imageCaption: 'The Federal Reserve Eccles Building in Washington, D.C., where governors met to assess macroeconomic indicators.',
-    imageCredit: 'The American Beacon / Alex Hamilton / AP Photo',
+    imageCredit: 'Unsplash / Editorial Photography',
     author: {
       id: 'auth-01',
       name: 'Marcus Vance Sterling',
@@ -93,7 +93,7 @@ export const SEED_ARTICLES: Article[] = [
     ],
     imageUrl: 'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?auto=format&fit=crop&w=1600&q=80',
     imageCaption: 'High-voltage transmission towers cutting across the American heartland at sunset.',
-    imageCredit: 'The American Beacon / David Callahan / Reuters',
+    imageCredit: 'Unsplash / Editorial Photography',
     author: {
       id: 'auth-02',
       name: 'Katherine Halliday',
@@ -254,7 +254,7 @@ export const SEED_ARTICLES: Article[] = [
     ],
     imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80',
     imageCaption: 'A state-of-the-art 300mm silicon wafer undergoing laser inspection in an American semiconductor foundry.',
-    imageCredit: 'The American Beacon / Marcus Vance / Reuters',
+    imageCredit: 'Unsplash / Financial Markets',
     author: {
       id: 'auth-01',
       name: 'Marcus Vance Sterling',

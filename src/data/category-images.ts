@@ -9,7 +9,7 @@ export const CATEGORY_IMAGE_POOLS: Record<
     {
       url: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=1600&q=80',
       caption: 'Capitol Hill and national press briefings in Washington, D.C.',
-      credit: 'The American Beacon / AP Photo / Wire',
+      credit: 'Unsplash / Editorial Photography',
     },
     {
       url: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1600&q=80',
@@ -19,14 +19,14 @@ export const CATEGORY_IMAGE_POOLS: Record<
     {
       url: 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1600&q=80',
       caption: 'Fresh national morning editions rolling off industrial press lines.',
-      credit: 'The American Beacon / Associated Press',
+      credit: 'Unsplash / Editorial Photography',
     },
   ],
   'us-news': [
     {
       url: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1600&q=80',
       caption: 'United States Supreme Court and federal appellate courts.',
-      credit: 'The American Beacon / Reuters / Archive',
+      credit: 'Unsplash / News Archive',
     },
     {
       url: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1600&q=80',
@@ -43,7 +43,7 @@ export const CATEGORY_IMAGE_POOLS: Record<
     {
       url: 'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?auto=format&fit=crop&w=1600&q=80',
       caption: 'The United States Capitol dome at dusk under illuminated rotunda lighting.',
-      credit: 'The American Beacon / Alex Hamilton / AP Photo',
+      credit: 'Unsplash / Capitol Photography',
     },
     {
       url: 'https://images.unsplash.com/photo-1520690214124-2405c5217036?auto=format&fit=crop&w=1600&q=80',
@@ -53,14 +53,14 @@ export const CATEGORY_IMAGE_POOLS: Record<
     {
       url: 'https://images.unsplash.com/photo-1555848962-6e79363ec58f?auto=format&fit=crop&w=1600&q=80',
       caption: 'White House West Wing corridors and federal executive briefings.',
-      credit: 'The American Beacon / Reuters Photo',
+      credit: 'Unsplash / News Archive',
     },
   ],
   business: [
     {
       url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80',
       caption: 'Corporate enterprise and Fortune 500 headquarters in major American cities.',
-      credit: 'The American Beacon / Bloomberg / Handout',
+      credit: 'Unsplash / Financial Photography',
     },
     {
       url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=80',
@@ -70,14 +70,14 @@ export const CATEGORY_IMAGE_POOLS: Record<
     {
       url: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1600&q=80',
       caption: 'Enterprise workplace technology and operations command suites.',
-      credit: 'The American Beacon / Reuters Syndicate',
+      credit: 'Unsplash / News Archive',
     },
   ],
   finance: [
     {
       url: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1600&q=80',
       caption: 'The Federal Reserve Eccles Building and Wall Street exchanges.',
-      credit: 'The American Beacon / Marcus Vance / Reuters',
+      credit: 'Unsplash / Financial Markets',
     },
     {
       url: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=80',
@@ -94,7 +94,7 @@ export const CATEGORY_IMAGE_POOLS: Record<
     {
       url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80',
       caption: 'Silicon Valley semiconductor fabrication and quantum hardware.',
-      credit: 'The American Beacon / Ryan Christopher / Getty Images',
+      credit: 'Unsplash / Technology Archive',
     },
     {
       url: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1600&q=80',
@@ -155,7 +155,7 @@ export const CATEGORY_IMAGE_POOLS: Record<
     {
       url: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1600&q=80',
       caption: 'Grammy-stage musical performances and live broadcast productions.',
-      credit: 'The American Beacon / Associated Press Entertainment',
+      credit: 'Unsplash / Editorial Photography',
     },
   ],
   health: [
@@ -240,7 +240,7 @@ export const CATEGORY_IMAGE_POOLS: Record<
     {
       url: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1600&q=80',
       caption: 'Major league championship soccer under stadium illumination.',
-      credit: 'The American Beacon / Associated Press Sports',
+      credit: 'Unsplash / Editorial Photography',
     },
   ],
 };

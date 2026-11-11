@@ -5,6 +5,9 @@ import { ShieldCheck, History, AlertTriangle } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'Corrections & Clarifications Policy | The American Beacon',
   description: 'The American Beacon policy on transparency, factual corrections, clarifications, and public record accountability.',
+  alternates: {
+    canonical: 'https://www.americanbeacon.online/corrections',
+  },
 };
 
 export default function CorrectionsPage() {

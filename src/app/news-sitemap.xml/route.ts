@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
 export async function GET() {
-  const baseUrl = 'https://americanbeacon.com';
+  const baseUrl = 'https://www.americanbeacon.online';
   const articles = db.getArticles();
 
   const xmlItems = articles

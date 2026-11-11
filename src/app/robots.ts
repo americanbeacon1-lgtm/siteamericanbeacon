@@ -20,9 +20,9 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: [
-      'https://americanbeacon.com/sitemap.xml',
-      'https://americanbeacon.com/news-sitemap.xml',
+      'https://www.americanbeacon.online/sitemap.xml',
+      'https://www.americanbeacon.online/news-sitemap.xml',
     ],
-    host: 'https://americanbeacon.com',
+    host: 'https://www.americanbeacon.online',
   };
 }

@@ -28,62 +28,88 @@ export default function AboutPage() {
       {/* Main Narrative */}
       <div className="article-content space-y-6">
         <p className="article-lead">
-          Headquartered in the National Press Building in Washington, D.C., with major bureaus in New York, San Francisco, Chicago, and London, <strong>The American Beacon</strong> serves as an indispensable digital news publication for discerning American readers, policymakers, institutional investors, and global citizens.
+          Published by The American Beacon Publishing Group, <strong>The American Beacon</strong> is an independent digital news organization based in Washington, D.C. We deliver fact-verified breaking news, investigative reporting, economic intelligence, and insightful policy analysis for readers, researchers, and decision makers.
         </p>
 
         <h2>Our Founding Mission</h2>
         <p>
-          Founded on the conviction that a self-governing republic depends on an informed citizenry, The American Beacon is dedicated to rigorous, fearless reporting. We adhere to the highest standards of accuracy, impartiality, and fairness. We believe journalism should be fair-minded, skeptical of concentrated power, and relentlessly devoted to empirical fact.
+          Founded on the conviction that a constitutional republic requires an informed and engaged citizenry, The American Beacon is dedicated to rigorous, principled, and non-partisan journalism. We hold our reporting to stringent benchmarks of accuracy, fairness, and empirical verification. We believe journalism should hold power accountable, scrutinize public institutions without bias, and remain steadfastly devoted to truth.
         </p>
 
         <div className="my-8 grid grid-cols-1 sm:grid-cols-3 gap-6 not-prose">
-          <div className="bg-neutral-50 border border-neutral-200 rounded p-5 space-y-2">
+          <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-5 space-y-2">
             <ShieldCheck className="w-6 h-6 text-red-700" />
             <h4 className="font-bold text-sm text-neutral-950 uppercase tracking-wide">
               Empirical Verification
             </h4>
             <p className="text-xs text-neutral-600 leading-relaxed">
-              Every factual assertion undergoes multi-source verification and independent editorial scrutiny before publication.
+              Every factual assertion undergoes multi-source verification, official documentation review, and independent editorial scrutiny prior to publication.
             </p>
           </div>
 
-          <div className="bg-neutral-50 border border-neutral-200 rounded p-5 space-y-2">
+          <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-5 space-y-2">
             <Award className="w-6 h-6 text-red-700" />
             <h4 className="font-bold text-sm text-neutral-950 uppercase tracking-wide">
               Editorial Independence
             </h4>
             <p className="text-xs text-neutral-600 leading-relaxed">
-              Our newsroom operates with an impenetrable wall separating editorial investigations from advertising and corporate influence.
+              Our newsroom maintains an absolute firewall separating editorial judgment from commercial advertising, sponsors, and outside corporate influence.
             </p>
           </div>
 
-          <div className="bg-neutral-50 border border-neutral-200 rounded p-5 space-y-2">
+          <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-5 space-y-2">
             <Globe className="w-6 h-6 text-red-700" />
             <h4 className="font-bold text-sm text-neutral-950 uppercase tracking-wide">
               National & Global Scope
             </h4>
             <p className="text-xs text-neutral-600 leading-relaxed">
-              From Capitol Hill hearing rooms to Wall Street algorithmic trading desks and deep-space observation stations.
+              Covering Capitol Hill legislation, federal courts, financial markets, frontier technology, and international diplomatic developments.
             </p>
           </div>
         </div>
 
-        <h2>Newsroom Organization & Leadership</h2>
+        <h2>Newsroom Desks & Coverage Areas</h2>
         <p>
-          Our newsroom brings together veteran investigative journalists, Pulitzer-honored correspondents, econometricians, and technology researchers. Major editorial divisions include:
+          Our editorial team organizes daily coverage across specialized editorial desks:
         </p>
 
         <ul>
-          <li><strong>The Washington Bureau:</strong> Executive policy, Congressional proceedings, Supreme Court jurisprudence, and federal regulatory oversight.</li>
-          <li><strong>The Financial & Markets Desk:</strong> Wall Street capital markets, Federal Reserve monetary policy, macroeconomic data, and corporate enterprise.</li>
-          <li><strong>The Tech & AI Frontier Lab:</strong> Silicon Valley breakthroughs, sovereign computing, artificial intelligence safety, and semiconductor infrastructure.</li>
-          <li><strong>The Science & Medicine Division:</strong> NIH clinical trials, space exploration, astrophysics, and public health science.</li>
+          <li><strong>Politics & Government:</strong> Executive policy, Congressional proceedings, Supreme Court jurisprudence, and federal regulatory agencies.</li>
+          <li><strong>Business & Markets:</strong> Wall Street capital markets, Federal Reserve monetary policy, corporate finance, and macroeconomics.</li>
+          <li><strong>Technology & Innovation:</strong> Artificial intelligence, cybersecurity, semiconductor manufacturing, and software infrastructure.</li>
+          <li><strong>World & Defense:</strong> Geopolitical affairs, national security, allied diplomacy, and global economic shifts.</li>
         </ul>
 
-        <h2>Commitment to Transparency</h2>
+        <h2>Institutional Governance & Transparency</h2>
         <p>
-          We hold ourselves to the exact same standards of accountability we demand of the institutions we cover. When errors occur, we correct them transparently and promptly in accordance with our public <Link href="/corrections" className="text-red-700 underline font-semibold">Corrections Policy</Link>.
+          In accordance with the best practices of international digital journalism, we maintain open public disclosures regarding our institutional operations:
         </p>
+        <ul className="not-prose grid grid-cols-1 sm:grid-cols-2 gap-3 my-4">
+          <li className="p-3 border border-neutral-200 rounded bg-white hover:border-neutral-400 transition">
+            <Link href="/team" className="font-bold text-neutral-900 hover:text-red-700 block text-sm">
+              → Our Editorial Team
+            </Link>
+            <span className="text-xs text-neutral-500">Learn about our newsroom structure, contributors, and management.</span>
+          </li>
+          <li className="p-3 border border-neutral-200 rounded bg-white hover:border-neutral-400 transition">
+            <Link href="/editorial-policy" className="font-bold text-neutral-900 hover:text-red-700 block text-sm">
+              → Editorial Standards & Ethics
+            </Link>
+            <span className="text-xs text-neutral-500">Our code of conduct, anonymous sourcing protocols, and verification methods.</span>
+          </li>
+          <li className="p-3 border border-neutral-200 rounded bg-white hover:border-neutral-400 transition">
+            <Link href="/corrections" className="font-bold text-neutral-900 hover:text-red-700 block text-sm">
+              → Corrections & Clarifications Policy
+            </Link>
+            <span className="text-xs text-neutral-500">How we handle factual corrections, updates, and public retractions.</span>
+          </li>
+          <li className="p-3 border border-neutral-200 rounded bg-white hover:border-neutral-400 transition">
+            <Link href="/ownership-and-funding" className="font-bold text-neutral-900 hover:text-red-700 block text-sm">
+              → Ownership & Funding Disclosure
+            </Link>
+            <span className="text-xs text-neutral-500">Full transparency on ownership structure, revenue streams, and independence.</span>
+          </li>
+        </ul>
       </div>
     </div>
   );

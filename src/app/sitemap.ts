@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 import { CATEGORIES } from '@/data/categories';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://americanbeacon.com';
+  const baseUrl = 'https://www.americanbeacon.online';
   const articles = db.getArticles();
 
   // 1. Static Core Pages
@@ -18,7 +18,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/about`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.7,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/team`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/contact`,
@@ -36,13 +42,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/editorial-policy`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.6,
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/corrections`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
-      priority: 0.6,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/ownership-and-funding`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/privacy-policy`,

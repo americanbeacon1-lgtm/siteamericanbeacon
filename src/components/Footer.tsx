@@ -94,10 +94,10 @@ export default function Footer() {
               The American Beacon is a national digital newspaper dedicated to independent, rigorous, and fact-verified journalism. From the corridors of Capitol Hill to Wall Street trading floors and frontier laboratories, we deliver truth without fear or favor.
             </p>
             <div className="space-y-1 text-neutral-400 text-[11px]">
-              <p className="font-semibold text-neutral-300">National Press Building Bureau</p>
-              <p>529 14th Street NW, Suite 800</p>
-              <p>Washington, D.C. 20045 • United States</p>
-              <p>Direct: +1 (202) 555-0192</p>
+              <p className="font-semibold text-neutral-300">Digital Editorial Newsroom</p>
+              <p>The American Beacon Publishing Group</p>
+              <p>Washington, D.C. • United States</p>
+              <p>Institutional Contact: <a href="mailto:americanbeacon@americanbeacon.online" className="text-neutral-300 hover:text-white underline">americanbeacon@americanbeacon.online</a></p>
             </div>
           </div>
 
@@ -196,13 +196,23 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/team" className="hover:text-white transition">
+                  Our Editorial Team
+                </Link>
+              </li>
+              <li>
                 <Link href="/editorial-policy" className="hover:text-white transition">
                   Editorial Standards & Code
                 </Link>
               </li>
               <li>
                 <Link href="/corrections" className="hover:text-white transition">
-                  Corrections & Retractions
+                  Corrections Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/ownership-and-funding" className="hover:text-white transition">
+                  Ownership & Funding
                 </Link>
               </li>
               <li>
@@ -217,7 +227,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/cookies" className="hover:text-white transition">
-                  Cookie Policy & Preferences
+                  Cookie Preferences
                 </Link>
               </li>
             </ul>
@@ -266,9 +276,9 @@ export default function Footer() {
         {/* Bottom Bar / Disclaimers / Copyright */}
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-neutral-500">
           <div className="flex items-center space-x-2">
-            <ShieldCheck className="w-4 h-4 text-neutral-400" />
+            <ShieldCheck className="w-4 h-4 text-neutral-400 shrink-0" />
             <span>
-              Member of the Independent Press Association • Associated Press (AP) & Reuters News Syndication Partner.
+              The American Beacon is an independent digital news publication committed to verified journalism, original reporting, and public-interest analysis.
             </span>
           </div>
 

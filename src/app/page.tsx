@@ -81,8 +81,8 @@ export default async function HomePage() {
       {/* 2.5 ALL RECENT EXTRACTED WIRE DISPATCHES (Continuous Stream) */}
       <LatestNewsFeed
         articles={allArticles.slice(1)}
-        title="Plantão de Notícias Recentes dos Estados Unidos"
-        subtitle="Role para baixo para visualizar todas as matérias extraídas e atualizadas dos maiores veículos de imprensa dos EUA em ordem cronológica."
+        title="Continuous National News Wire • U.S. Dispatches"
+        subtitle="Chronological verified reporting, policy analysis, and wire dispatches from Washington, Wall Street, and national correspondents."
       />
 
       {/* 3. IN-DEPTH: ARTIFICIAL INTELLIGENCE & TECH FRONTIER */}

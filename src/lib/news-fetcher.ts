@@ -16,27 +16,27 @@ const CATEGORY_DEFAULT_IMAGES: Record<CategorySlug, { url: string; caption: stri
   'us-news': {
     url: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1600&q=80',
     caption: 'United States Supreme Court and federal appellate courts.',
-    credit: 'The American Beacon / Reuters / Archive',
+    credit: 'Unsplash / Editorial Photography',
   },
   'politics': {
     url: 'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?auto=format&fit=crop&w=1600&q=80',
     caption: 'The United States Capitol dome at dusk under illuminated rotunda lighting.',
-    credit: 'The American Beacon / Alex Hamilton / AP Photo',
+    credit: 'Unsplash / Editorial Photography',
   },
   'business': {
     url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80',
     caption: 'Corporate enterprise and Fortune 500 headquarters.',
-    credit: 'The American Beacon / Bloomberg / Handout',
+    credit: 'Unsplash / Commercial Photography',
   },
   'finance': {
     url: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1600&q=80',
     caption: 'The Federal Reserve Eccles Building and Wall Street exchanges.',
-    credit: 'The American Beacon / Marcus Vance / Reuters',
+    credit: 'Unsplash / Financial Photography',
   },
   'technology': {
     url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80',
     caption: 'Silicon Valley semiconductor fabrication and quantum hardware.',
-    credit: 'The American Beacon / Ryan Christopher / Getty Images',
+    credit: 'Unsplash / Tech Archive',
   },
   'artificial-intelligence': {
     url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1600&q=80',
@@ -347,7 +347,7 @@ export async function fetchFromFeed(feed: NewsFeedSource, options?: FetchOptions
         isEditorsPick: true,
         viewsCount: Math.floor(Math.random() * 14000) + 2500,
         tags: [feed.outlet, feed.category.toUpperCase(), 'Live Wire', 'U.S. News'],
-        sources: [feed.outlet, 'Associated Press Wire', 'Reuters Syndicate', 'The American Beacon Newsroom'],
+        sources: [feed.outlet, 'Public Wire Dispatch', 'Primary Source Documents'],
         seo: {
           metaTitle: `${title} | The American Beacon`,
           metaDescription: cleanDesc.slice(0, 160) || `Read the latest report on ${title} at The American Beacon.`,

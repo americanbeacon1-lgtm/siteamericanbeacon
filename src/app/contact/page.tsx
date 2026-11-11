@@ -41,19 +41,15 @@ export default function ContactPage() {
         <div className="md:col-span-5 space-y-6 text-xs text-neutral-600">
           <div className="bg-neutral-50 border border-neutral-200 rounded p-5 space-y-3">
             <h3 className="font-serif text-base font-bold text-neutral-900 uppercase tracking-wide">
-              Headquarters Bureau
+              Editorial Newsroom & Inquiries
             </h3>
             <div className="flex items-start gap-2.5">
               <MapPin className="w-4 h-4 text-red-700 mt-0.5 shrink-0" />
               <div>
-                <p className="font-bold text-neutral-900">National Press Building</p>
-                <p>529 14th Street NW, Suite 800</p>
-                <p>Washington, D.C. 20045</p>
+                <p className="font-bold text-neutral-900">The American Beacon Publishing Group</p>
+                <p>Digital Operations & Bureau</p>
+                <p>Washington, D.C. • United States</p>
               </div>
-            </div>
-            <div className="flex items-center gap-2.5">
-              <Phone className="w-4 h-4 text-red-700 shrink-0" />
-              <p>+1 (202) 555-0192</p>
             </div>
             <div className="flex items-center gap-2.5">
               <Mail className="w-4 h-4 text-red-700 shrink-0" />

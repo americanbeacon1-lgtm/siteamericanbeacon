@@ -13,6 +13,7 @@ import AdBanner from '@/components/AdBanner';
 import ArticleCard from '@/components/ArticleCard';
 import TrendingSidebar from '@/components/TrendingSidebar';
 import NewsImage from '@/components/NewsImage';
+import { getArticleOrigin } from '@/lib/content-origin';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -46,7 +47,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: article.title,
       description: article.subtitle || article.title,
-      url: `https://americanbeacon.com/news/${article.slug}`,
+      url: `https://www.americanbeacon.online/news/${article.slug}`,
       type: 'article',
       publishedTime: article.publishedAt || new Date().toISOString(),
       modifiedTime: article.updatedAt || new Date().toISOString(),
@@ -128,13 +129,25 @@ export default async function ArticlePage({ params }: PageProps) {
     timeZoneName: 'short',
   });
 
+  const origin = getArticleOrigin(article);
+  const isUpdated = Boolean(article.updatedAt && article.updatedAt !== article.publishedAt);
+  const formattedUpdateDate = isUpdated
+    ? new Date(article.updatedAt!).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+      })
+    : null;
+
   // Schema.org NewsArticle JSON-LD
   const newsArticleSchema = {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://americanbeacon.com/news/${article.slug}`,
+      '@id': `https://www.americanbeacon.online/news/${article.slug}`,
     },
     headline: article.title,
     description: article.subtitle,
@@ -145,14 +158,13 @@ export default async function ArticlePage({ params }: PageProps) {
       '@type': 'Person',
       name: safeAuthor.name,
       jobTitle: safeAuthor.role,
-      url: `https://americanbeacon.com/authors/${safeAuthor.id}`,
     },
     publisher: {
       '@type': 'NewsMediaOrganization',
       name: 'The American Beacon',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://americanbeacon.com/logo.png',
+        url: 'https://www.americanbeacon.online/icon.png',
       },
     },
     articleSection: categoryInfo?.name || article.category,
@@ -195,13 +207,18 @@ export default async function ArticlePage({ params }: PageProps) {
 
         {/* Article Headline & Deck */}
         <header className="mb-6 space-y-4">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               href={`/category/${article.category}`}
               className="text-xs font-black uppercase tracking-widest text-red-700 bg-red-50 border border-red-200 px-2.5 py-1 rounded inline-block"
             >
               {categoryInfo?.name || article.category}
             </Link>
+            <span
+              className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${origin.bgClass} ${origin.colorClass} ${origin.borderClass}`}
+            >
+              {origin.badgeLabel}
+            </span>
             <span className="text-xs text-neutral-500 font-semibold">• {article.readTimeMinutes} min read</span>
           </div>
 
@@ -232,10 +249,15 @@ export default async function ArticlePage({ params }: PageProps) {
 
             <div className="sm:text-right text-neutral-500 space-y-0.5">
               <p className="font-medium text-neutral-900">
-                Published {formattedPublishDate} at {formattedTime}
+                <time dateTime={article.publishedAt}>Published {formattedPublishDate} at {formattedTime}</time>
               </p>
+              {formattedUpdateDate && (
+                <p className="text-[11px] text-neutral-600 font-medium">
+                  <time dateTime={article.updatedAt}>Updated {formattedUpdateDate}</time>
+                </p>
+              )}
               <p className="text-[11px] text-neutral-400">
-                Verified by American Beacon Editorial Board • Washington Bureau
+                {origin.sourceLabel} • Editorial Standards Verified
               </p>
             </div>
           </div>
@@ -282,28 +304,51 @@ export default async function ArticlePage({ params }: PageProps) {
               dangerouslySetInnerHTML={{ __html: article.content }}
             />
 
-            {/* In-Article Mid Ad Unit */}
-            <AdBanner position="in_article" adSlot={inArticleAd} className="my-8" />
+            {/* In-Article Ad Unit (Discreet & Clearly Disclosed) */}
+            <div className="my-8">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 block text-center mb-1.5">
+                Advertisement
+              </span>
+              <AdBanner position="in_article" adSlot={inArticleAd} />
+            </div>
 
             {/* Sourcing & Verification Notice */}
-            <div className="bg-neutral-50 border border-neutral-200 rounded p-4 my-8 text-xs text-neutral-700 space-y-2">
-              <div className="flex items-center gap-2 font-bold text-neutral-900 uppercase tracking-wider text-[11px]">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" /> Journalistic Sourcing & Ethics Standards
+            <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-5 my-8 text-xs text-neutral-700 space-y-3">
+              <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
+                <div className="flex items-center gap-2 font-bold text-neutral-900 uppercase tracking-wider text-[11px]">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> Sourcing & Editorial Accountability
+                </div>
+                <Link href="/editorial-policy" className="text-red-700 hover:underline text-[11px] font-semibold">
+                  Editorial Standards →
+                </Link>
               </div>
               <p>
-                The American Beacon adheres to rigorous standards of accuracy and fact-verification. This report incorporates verified primary records from:
+                The American Beacon adheres to empirical standards of verification and document review. This dispatch incorporates verified primary records from:
               </p>
-              <ul className="list-disc list-inside space-y-1 text-neutral-600">
+              <ul className="list-disc list-inside space-y-1 text-neutral-800 font-mono text-[11px]">
                 {article.sources.map((src, i) => (
-                  <li key={i}>{src}</li>
+                  <li key={i}>
+                    {src.startsWith('http') ? (
+                      <a href={src} target="_blank" rel="noopener noreferrer" className="text-red-700 underline break-all">
+                        {src}
+                      </a>
+                    ) : (
+                      <span>{src}</span>
+                    )}
+                  </li>
                 ))}
               </ul>
-              <p className="text-[11px] text-neutral-500 pt-1">
-                For corrections or inquiries regarding this reporting, contact our standards editor at{' '}
-                <a href="mailto:americanbeacon@americanbeacon.online" className="text-red-700 underline">
+              <div className="pt-2 border-t border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-neutral-500">
+                <span>
+                  Factual correction request? Consult our{' '}
+                  <Link href="/corrections" className="text-red-700 underline font-semibold">
+                    Corrections Policy
+                  </Link>.
+                </span>
+                <a href="mailto:americanbeacon@americanbeacon.online" className="text-red-700 underline font-semibold shrink-0">
                   americanbeacon@americanbeacon.online
-                </a>.
-              </p>
+                </a>
+              </div>
             </div>
 
             {/* Tags */}

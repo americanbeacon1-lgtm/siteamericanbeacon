@@ -29,10 +29,10 @@ const DEFAULT_SETTINGS: SiteSettings = {
   siteName: 'The American Beacon',
   tagline: 'The Voice of the Republic • Independent Journalism & Global Intelligence',
   description: 'The American Beacon delivers authoritative, independent breaking news, financial intelligence, political analysis, and investigative journalism for the United States.',
-  editorialBureau: 'National Press Building, 529 14th St NW, Washington, D.C. 20045',
+  editorialBureau: 'Digital Newsroom & Editorial Operations • Washington, D.C.',
   contactEmail: 'americanbeacon@americanbeacon.online',
-  phone: '+1 (202) 555-0192',
-  address: 'Washington, D.C. • New York • San Francisco • London',
+  phone: '',
+  address: 'Washington, D.C., United States',
   googleAnalyticsId: 'G-ABN2026US99',
   googleSearchConsoleTag: 'google-site-verification=BeaconUSAuth2026OfficialJournalism',
   adsensePublisherId: 'ca-pub-9842104820194821',
@@ -185,6 +185,12 @@ function ensureDataFile(): DatabaseSchema {
         if (!parsed.settings.contactEmail || parsed.settings.contactEmail.includes('americanbeacon.com')) {
           parsed.settings.contactEmail = DEFAULT_SETTINGS.contactEmail;
         }
+        if (parsed.settings.phone && parsed.settings.phone.includes('555-0192')) {
+          parsed.settings.phone = '';
+        }
+        if (parsed.settings.editorialBureau && parsed.settings.editorialBureau.includes('National Press Building')) {
+          parsed.settings.editorialBureau = DEFAULT_SETTINGS.editorialBureau;
+        }
         globalThis.__BEACON_DB_CACHE__ = parsed;
         return parsed;
       }
@@ -200,6 +206,12 @@ function ensureDataFile(): DatabaseSchema {
         if (!parsed.settings) parsed.settings = { ...DEFAULT_SETTINGS };
         if (!parsed.settings.contactEmail || parsed.settings.contactEmail.includes('americanbeacon.com')) {
           parsed.settings.contactEmail = DEFAULT_SETTINGS.contactEmail;
+        }
+        if (parsed.settings.phone && parsed.settings.phone.includes('555-0192')) {
+          parsed.settings.phone = '';
+        }
+        if (parsed.settings.editorialBureau && parsed.settings.editorialBureau.includes('National Press Building')) {
+          parsed.settings.editorialBureau = DEFAULT_SETTINGS.editorialBureau;
         }
         globalThis.__BEACON_DB_CACHE__ = parsed;
         return parsed;

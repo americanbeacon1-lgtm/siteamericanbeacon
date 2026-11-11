@@ -4,6 +4,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Privacy Policy | CCPA, CPRA & CalOPPA Compliance | The American Beacon',
   description: 'The American Beacon privacy policy outlining data collection, cookies, California Consumer Privacy Act compliance, and your digital privacy rights.',
+  alternates: {
+    canonical: 'https://www.americanbeacon.online/privacy-policy',
+  },
 };
 
 export default function PrivacyPolicyPage() {
@@ -62,9 +65,9 @@ export default function PrivacyPolicyPage() {
           For questions, data access requests, or privacy inquiries, contact our Legal & Privacy Bureau:
         </p>
         <p>
-          <strong>The American Beacon Publishing Group Inc.</strong><br />
-          Attention: Privacy Officer<br />
-          529 14th Street NW, Suite 800, Washington, D.C. 20045<br />
+          <strong>The American Beacon Publishing Group</strong><br />
+          Attention: Privacy & Compliance Desk<br />
+          Washington, D.C. • United States<br />
           Email: <a href="mailto:americanbeacon@americanbeacon.online" className="text-red-700 underline">americanbeacon@americanbeacon.online</a>
         </p>
       </div>

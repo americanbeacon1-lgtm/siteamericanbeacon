@@ -28,9 +28,9 @@ export async function generateMetadata(): Promise<Metadata> {
     authors: [{ name: 'The American Beacon Editorial Board' }],
     creator: 'The American Beacon Publishing Group Inc.',
     publisher: 'The American Beacon Publishing Group Inc.',
-    metadataBase: new URL('https://americanbeacon.com'),
+    metadataBase: new URL('https://www.americanbeacon.online'),
     alternates: {
-      canonical: '/',
+      canonical: 'https://www.americanbeacon.online',
       types: {
         'application/rss+xml': '/rss.xml',
       },
@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: 'website',
       locale: 'en_US',
-      url: 'https://americanbeacon.com',
+      url: 'https://www.americanbeacon.online',
       siteName: settings.siteName,
       title: `${settings.siteName} — The Voice of the Republic`,
       description: settings.description,
@@ -99,8 +99,8 @@ export default function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'NewsMediaOrganization',
     name: settings.siteName,
-    url: 'https://americanbeacon.com',
-    logo: 'https://americanbeacon.com/logo.png',
+    url: 'https://www.americanbeacon.online',
+    logo: 'https://www.americanbeacon.online/icon.png',
     sameAs: [
       'https://twitter.com/AmericanBeacon',
       'https://www.linkedin.com/company/american-beacon',
@@ -108,15 +108,12 @@ export default function RootLayout({
     ],
     address: {
       '@type': 'PostalAddress',
-      streetAddress: '529 14th Street NW, Suite 800',
       addressLocality: 'Washington',
       addressRegion: 'DC',
-      postalCode: '20045',
       addressCountry: 'US',
     },
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '+1-202-555-0192',
       contactType: 'editorial newsroom',
       email: settings.contactEmail,
     },

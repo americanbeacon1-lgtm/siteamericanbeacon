@@ -390,6 +390,38 @@ export default function Header() {
 
                   <div className="mt-3 pt-3 border-t border-neutral-200 grid grid-cols-2 gap-2 text-[11px]">
                     <Link
+                      href="/about"
+                      onClick={() => setMoreMenuOpen(false)}
+                      className="p-1.5 rounded bg-neutral-50 hover:bg-neutral-100 font-semibold text-neutral-800 flex items-center justify-between"
+                    >
+                      <span>About Us</span>
+                      <span className="text-red-700 font-bold">→</span>
+                    </Link>
+                    <Link
+                      href="/team"
+                      onClick={() => setMoreMenuOpen(false)}
+                      className="p-1.5 rounded bg-neutral-50 hover:bg-neutral-100 font-semibold text-neutral-800 flex items-center justify-between"
+                    >
+                      <span>Our Team</span>
+                      <span className="text-red-700 font-bold">→</span>
+                    </Link>
+                    <Link
+                      href="/editorial-policy"
+                      onClick={() => setMoreMenuOpen(false)}
+                      className="p-1.5 rounded bg-neutral-50 hover:bg-neutral-100 font-semibold text-neutral-800 flex items-center justify-between"
+                    >
+                      <span>Editorial Standards</span>
+                      <span className="text-red-700 font-bold">→</span>
+                    </Link>
+                    <Link
+                      href="/ownership-and-funding"
+                      onClick={() => setMoreMenuOpen(false)}
+                      className="p-1.5 rounded bg-neutral-50 hover:bg-neutral-100 font-semibold text-neutral-800 flex items-center justify-between"
+                    >
+                      <span>Ownership & Funding</span>
+                      <span className="text-red-700 font-bold">→</span>
+                    </Link>
+                    <Link
                       href="/advertise"
                       onClick={() => setMoreMenuOpen(false)}
                       className="p-1.5 rounded bg-neutral-50 hover:bg-neutral-100 font-semibold text-neutral-800 flex items-center justify-between"
@@ -398,11 +430,11 @@ export default function Header() {
                       <span className="text-red-700 font-bold">→</span>
                     </Link>
                     <Link
-                      href="/newsletters"
+                      href="/contact"
                       onClick={() => setMoreMenuOpen(false)}
                       className="p-1.5 rounded bg-neutral-50 hover:bg-neutral-100 font-semibold text-neutral-800 flex items-center justify-between"
                     >
-                      <span>Daily Newsletters</span>
+                      <span>Contact Bureau</span>
                       <span className="text-red-700 font-bold">→</span>
                     </Link>
                   </div>
@@ -476,13 +508,20 @@ export default function Header() {
             ))}
           </div>
 
-          <div className="pt-4 border-t border-neutral-800 space-y-2 text-xs">
+          <div className="pt-4 border-t border-neutral-800 grid grid-cols-2 gap-2 text-xs">
             <Link
               href="/about"
               className="block text-neutral-400 hover:text-white"
               onClick={() => setMobileMenuOpen(false)}
             >
-              About The American Beacon
+              About The Beacon
+            </Link>
+            <Link
+              href="/team"
+              className="block text-neutral-400 hover:text-white"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Our Team
             </Link>
             <Link
               href="/editorial-policy"
@@ -492,11 +531,25 @@ export default function Header() {
               Editorial Standards
             </Link>
             <Link
-              href="/advertise"
+              href="/corrections"
               className="block text-neutral-400 hover:text-white"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Advertise With Us
+              Corrections Policy
+            </Link>
+            <Link
+              href="/ownership-and-funding"
+              className="block text-neutral-400 hover:text-white"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Ownership & Funding
+            </Link>
+            <Link
+              href="/contact"
+              className="block text-neutral-400 hover:text-white"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Contact Bureau
             </Link>
           </div>
         </div>

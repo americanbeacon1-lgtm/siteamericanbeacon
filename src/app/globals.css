@@ -132,3 +132,37 @@ button, a {
     margin: 1.5rem 0;
   }
 }
+
+/* Print Optimization for Editorial Dispatches */
+@media print {
+  header, footer, aside, nav, .no-print, [data-ad-position] {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12pt !important;
+    line-height: 1.5 !important;
+  }
+
+  .article-content {
+    font-size: 12pt !important;
+    color: #000000 !important;
+  }
+
+  article {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+}

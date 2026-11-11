@@ -8,6 +8,7 @@ import { CategorySlug } from '@/types';
 import ArticleCard from '@/components/ArticleCard';
 import AdBanner from '@/components/AdBanner';
 import TrendingSidebar from '@/components/TrendingSidebar';
+import TechnologyCategoryFeed from '@/components/TechnologyCategoryFeed';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: category.seoTitle,
       description: category.seoDescription,
-      url: `https://americanbeacon.com/category/${category.slug}`,
+      url: `https://www.americanbeacon.online/category/${category.slug}`,
       siteName: 'The American Beacon',
     },
   };
@@ -48,7 +49,26 @@ export default async function CategoryPage({ params }: PageProps) {
   }
 
   await db.syncLatestArticles();
-  const categoryArticles = db.getArticles({ category: category.slug });
+  let categoryArticles = db.getArticles({ category: category.slug });
+
+  // For the Technology desk, dynamically pull all technology and AI dispatches
+  if (category.slug === 'technology') {
+    const allArticles = db.getArticles();
+    const techRelated = allArticles.filter(
+      (a) =>
+        a.category === 'technology' ||
+        a.category === 'artificial-intelligence' ||
+        a.tags?.some((t) => /ai|tech|cyber|software|hardware|startup|computing|semiconductor|cloud|intel|apple|nvidia/i.test(t))
+    );
+    const seen = new Set<string>();
+    const merged = [...categoryArticles, ...techRelated].filter((a) => {
+      if (seen.has(a.id)) return false;
+      seen.add(a.id);
+      return true;
+    });
+    categoryArticles = merged;
+  }
+
   const trendingArticles = db.getArticles({ trending: true, limit: 5 });
   const headerAd = db.getAdByPosition('header');
   const sidebarAd = db.getAdByPosition('sidebar');
@@ -87,7 +107,7 @@ export default async function CategoryPage({ params }: PageProps) {
 
       {/* Content Layout */}
       {categoryArticles.length === 0 ? (
-        <div className="text-center py-20 bg-neutral-50 rounded border border-neutral-200">
+        <div className="text-center py-20 bg-neutral-50 rounded-xl border border-neutral-200">
           <h3 className="font-serif text-2xl font-bold text-neutral-800">
             Fresh dispatches being filed for {category.name}
           </h3>
@@ -100,6 +120,17 @@ export default async function CategoryPage({ params }: PageProps) {
           >
             ← Return to Front Page
           </Link>
+        </div>
+      ) : category.slug === 'technology' ? (
+        /* Enhanced Technology Desk Experience */
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8">
+            <TechnologyCategoryFeed articles={categoryArticles} />
+          </div>
+          <aside className="lg:col-span-4 space-y-6">
+            <TrendingSidebar articles={trendingArticles} />
+            <AdBanner position="sidebar" adSlot={sidebarAd} />
+          </aside>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

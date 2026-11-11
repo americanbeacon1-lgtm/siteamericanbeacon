@@ -7,6 +7,7 @@ import { Newspaper, ChevronRight, Clock, Flame, Filter, ChevronDown, CheckCircle
 import { Article, CategorySlug } from '@/types';
 import { CATEGORY_MAP } from '@/data/categories';
 import NewsImage from '@/components/NewsImage';
+import { getArticleOrigin } from '@/lib/content-origin';
 
 interface LatestNewsFeedProps {
   articles: Article[];
@@ -121,13 +122,14 @@ export default function LatestNewsFeed({
       {/* Grid of Articles */}
       {displayedArticles.length === 0 ? (
         <div className="text-center py-12 text-neutral-500">
-          <p className="font-serif text-lg">Nenhuma notícia encontrada nesta categoria.</p>
+          <p className="font-serif text-lg">No dispatches found in this category.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 pt-6">
           {displayedArticles.map((article, idx) => {
             const catInfo = CATEGORY_MAP.get(article.category);
             const isFreshLead = idx < 3;
+            const origin = getArticleOrigin(article);
 
             return (
               <article
@@ -136,7 +138,7 @@ export default function LatestNewsFeed({
               >
                 <div>
                   {/* Image */}
-                  <Link href={`/news/${encodeURIComponent(article.slug)}`} className="block overflow-hidden rounded bg-neutral-100 mb-3 relative aspect-[16/10]">
+                  <Link href={`/news/${encodeURIComponent(article.slug)}`} className="block overflow-hidden rounded-lg bg-neutral-100 mb-3 relative aspect-[16/10]">
                     <NewsImage
                       src={article.imageUrl}
                       alt={article.title}
@@ -146,15 +148,20 @@ export default function LatestNewsFeed({
                     />
                     {isFreshLead && (
                       <span className="absolute top-2 left-2 bg-red-700 text-white font-mono text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow">
-                        RECÉM-EXTRAÍDA
+                        LATEST
                       </span>
                     )}
                   </Link>
 
                   {/* Metadata Bar */}
-                  <div className="flex items-center gap-2 mb-2">
+                  <div className="flex items-center gap-1.5 mb-2 flex-wrap">
                     <span className="text-[10px] font-black uppercase tracking-wider text-red-700 bg-red-50 border border-red-200 px-1.5 py-0.5 rounded">
                       {catInfo?.name || article.category}
+                    </span>
+                    <span
+                      className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded border ${origin.bgClass} ${origin.colorClass} ${origin.borderClass}`}
+                    >
+                      {origin.badgeLabel}
                     </span>
                     <span className="text-[11px] text-neutral-400 font-medium">
                       • {article.readTimeMinutes || 3} min read
@@ -196,11 +203,11 @@ export default function LatestNewsFeed({
             onClick={handleLoadMore}
             className="inline-flex items-center gap-2 bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
           >
-            <span>Carregar Mais Notícias Recentes</span>
+            <span>Load More Dispatches</span>
             <ChevronDown className="w-4 h-4" />
           </button>
           <p className="text-[11px] text-neutral-500 mt-2">
-            Mostrando {displayedArticles.length} de {filteredArticles.length} matérias disponíveis no portal
+            Showing {displayedArticles.length} of {filteredArticles.length} available dispatches
           </p>
         </div>
       )}
@@ -208,7 +215,7 @@ export default function LatestNewsFeed({
       {!hasMore && filteredArticles.length > 18 && (
         <div className="flex items-center justify-center gap-2 text-xs text-neutral-500 pt-8 pb-4 font-mono">
           <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-          <span>Você visualizou todas as reportagens recentes extraídas no portal.</span>
+          <span>You have reviewed all recent dispatches published on the portal.</span>
         </div>
       )}
     </section>

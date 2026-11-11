@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Share2, Link as LinkIcon, Check, Mail } from 'lucide-react';
+import { Share2, Link as LinkIcon, Check, Mail, Printer } from 'lucide-react';
 
 interface ShareButtonsProps {
   title: string;
@@ -80,11 +80,23 @@ export default function ShareButtons({ title, url }: ShareButtonsProps) {
         <Mail className="w-3.5 h-3.5" />
       </a>
 
+      {/* Print Option */}
+      <button
+        onClick={() => {
+          if (typeof window !== 'undefined') window.print();
+        }}
+        aria-label="Print this story"
+        title="Print this story"
+        className="w-8 h-8 rounded-full border border-neutral-200 flex items-center justify-center text-neutral-700 hover:text-white hover:bg-neutral-800 hover:border-neutral-800 transition cursor-pointer"
+      >
+        <Printer className="w-3.5 h-3.5" />
+      </button>
+
       {/* Copy Link */}
       <button
         onClick={copyToClipboard}
         aria-label="Copy article link"
-        className="flex items-center gap-1 text-[11px] font-semibold text-neutral-600 hover:text-neutral-900 border border-neutral-200 rounded-full px-3 py-1.5 transition ml-auto"
+        className="flex items-center gap-1 text-[11px] font-semibold text-neutral-600 hover:text-neutral-900 border border-neutral-200 rounded-full px-3 py-1.5 transition ml-auto cursor-pointer"
       >
         {copied ? (
           <>
