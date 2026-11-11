@@ -29,12 +29,12 @@ export default function AdvertisePage() {
       console.warn('Could not save inquiry lead to DB:', err);
     }
 
-    // 2. Prepare direct mailto link to gustavomourabarbosagmm@gmail.com
+    // 2. Prepare direct mailto link to americanbeacon@americanbeacon.online
     const subject = encodeURIComponent(
       `Commercial Advertising Inquiry: ${formData.company || 'Prospective Sponsor'} (${formData.contactName})`
     );
     const body = encodeURIComponent(
-      `Hello Gustavo,\n\nI have submitted an advertising inquiry on The American Beacon:\n\n` +
+      `Hello American Beacon Commercial Desk,\n\nI have submitted an advertising inquiry on The American Beacon:\n\n` +
       `• Company / Agency: ${formData.company}\n` +
       `• Contact Name: ${formData.contactName}\n` +
       `• Corporate Email: ${formData.email}\n` +
@@ -42,7 +42,7 @@ export default function AdvertisePage() {
       `• Campaign Goals & Target Audience:\n${formData.campaignGoals || 'Standard digital campaign'}\n\n` +
       `Please provide your full 2026 media kit, rate card, and placement availability.`
     );
-    const mailtoUrl = `mailto:gustavomourabarbosagmm@gmail.com?subject=${subject}&body=${body}`;
+    const mailtoUrl = `mailto:americanbeacon@americanbeacon.online?subject=${subject}&body=${body}`;
 
     // Trigger direct email opening
     try {
@@ -196,15 +196,15 @@ export default function AdvertisePage() {
             <div className="flex items-center gap-2 bg-neutral-900 border border-cyan-800/80 px-3.5 py-1.5 rounded-lg">
               <Mail className="w-4 h-4 text-cyan-400 shrink-0" />
               <span className="font-mono text-cyan-300 font-bold text-xs sm:text-sm select-all">
-                gustavomourabarbosagmm@gmail.com
+                americanbeacon@americanbeacon.online
               </span>
             </div>
-            <span className="text-xs text-neutral-400">Commercial Director: Gustavo Moura Barbosa</span>
+            <span className="text-xs text-neutral-400">Commercial Advertising Desk</span>
           </div>
         </div>
 
         <a
-          href="mailto:gustavomourabarbosagmm@gmail.com?subject=Advertising%20Inquiry%20-%20The%20American%20Beacon&body=Hello%20Gustavo,%0D%0A%0D%0AI%20am%20interested%20in%20advertising%20on%20The%20American%20Beacon.%20Please%20send%20your%202026%20media%20kit,%20rate%20card,%20and%20available%20inventory.%0D%0A%0D%0ACompany:%0D%0AName:%0D%0ABudget:"
+          href="mailto:americanbeacon@americanbeacon.online?subject=Advertising%20Inquiry%20-%20The%20American%20Beacon&body=Hello%20Commercial%20Desk,%0D%0A%0D%0AI%20am%20interested%20in%20advertising%20on%20The%20American%20Beacon.%20Please%20send%20your%202026%20media%20kit,%20rate%20card,%20and%20available%20inventory.%0D%0A%0D%0ACompany:%0D%0AName:%0D%0ABudget:"
           className="shrink-0 inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white font-bold text-xs uppercase tracking-wider px-6 py-4 rounded-xl shadow-xl shadow-red-950/70 transition cursor-pointer"
         >
           <Mail className="w-4 h-4" />
@@ -219,7 +219,7 @@ export default function AdvertisePage() {
             Request Media Kit & Reserve Placement
           </h2>
           <p className="text-xs text-neutral-600">
-            Submitting this request logs your inquiry into our editorial commercial registry and routes directly to commercial director Gustavo Moura Barbosa (<span className="font-mono font-semibold">gustavomourabarbosagmm@gmail.com</span>).
+            Submitting this request logs your inquiry into our editorial commercial registry and routes directly to our commercial desk (<span className="font-mono font-semibold">americanbeacon@americanbeacon.online</span>).
           </p>
         </div>
 
@@ -228,16 +228,16 @@ export default function AdvertisePage() {
             <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
             <h3 className="font-serif text-2xl font-bold text-neutral-950">Inquiry Received & Dispatched</h3>
             <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-              Your inquiry has been logged and forwarded directly to commercial director Gustavo Moura Barbosa at{' '}
-              <strong className="text-neutral-900 font-mono">gustavomourabarbosagmm@gmail.com</strong>.
+              Your inquiry has been logged and forwarded directly to our commercial desk at{' '}
+              <strong className="text-neutral-900 font-mono">americanbeacon@americanbeacon.online</strong>.
             </p>
 
             <div className="pt-2">
               <a
-                href={`mailto:gustavomourabarbosagmm@gmail.com?subject=${encodeURIComponent(
+                href={`mailto:americanbeacon@americanbeacon.online?subject=${encodeURIComponent(
                   `Commercial Inquiry: ${formData.company || 'Partner'} (${formData.contactName})`
                 )}&body=${encodeURIComponent(
-                  `Hello Gustavo,\n\nInquiry details submitted on The American Beacon:\n• Company: ${formData.company}\n• Contact Name: ${formData.contactName}\n• Corporate Email: ${formData.email}\n• Budget: ${formData.budget}\n• Goals: ${formData.campaignGoals}`
+                  `Hello Commercial Desk,\n\nInquiry details submitted on The American Beacon:\n• Company: ${formData.company}\n• Contact Name: ${formData.contactName}\n• Corporate Email: ${formData.email}\n• Budget: ${formData.budget}\n• Goals: ${formData.campaignGoals}`
                 )}`}
                 className="inline-flex items-center gap-2 bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-lg shadow-sm transition"
               >
@@ -341,7 +341,7 @@ export default function AdvertisePage() {
               ) : (
                 <>
                   <Send className="w-3.5 h-3.5" />
-                  <span>Submit Advertising Inquiry to gustavomourabarbosagmm@gmail.com</span>
+                  <span>Submit Advertising Inquiry to americanbeacon@americanbeacon.online</span>
                 </>
               )}
             </button>

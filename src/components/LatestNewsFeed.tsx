@@ -196,7 +196,7 @@ export default function LatestNewsFeed({
             onClick={handleLoadMore}
             className="inline-flex items-center gap-2 bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
           >
-            <span>Carregar Mais Notícias Recentes (+18)</span>
+            <span>Carregar Mais Notícias Recentes</span>
             <ChevronDown className="w-4 h-4" />
           </button>
           <p className="text-[11px] text-neutral-500 mt-2">

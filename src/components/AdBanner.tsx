@@ -44,7 +44,7 @@ export default function AdBanner({ position, adSlot, className = '' }: AdBannerP
       title: 'Advertise on The American Beacon — Reach 2.4M+ US Decision Makers',
       subtitle: 'Position your brand in front of senior executives, investors, and consumers across the United States.',
       sponsor: 'Commercial Advertising Desk',
-      link: 'mailto:gustavomourabarbosagmm@gmail.com?subject=Advertising%20Inquiry%20-%20The%20American%20Beacon&body=Hello%20Gustavo,%0D%0A%0D%0AI%20am%20interested%20in%20advertising%20on%20The%20American%20Beacon.%20Please%20send%20your%20media%20kit%20and%20rates.%0D%0A%0D%0ACompany:%0D%0AName:%0D%0ABudget:',
+      link: 'mailto:americanbeacon@americanbeacon.online?subject=Advertising%20Inquiry%20-%20The%20American%20Beacon&body=Hello%20Commercial%20Desk,%0D%0A%0D%0AI%20am%20interested%20in%20advertising%20on%20The%20American%20Beacon.%20Please%20send%20your%20media%20kit%20and%20rates.%0D%0A%0D%0ACompany:%0D%0AName:%0D%0ABudget:',
       cta: 'Advertise Here • Contact Desk',
       dimension: '300x600 Half-Page',
     },
@@ -213,10 +213,10 @@ export default function AdBanner({ position, adSlot, className = '' }: AdBannerP
 
   // 3. SIDEBAR BANNER (Dedicated vertical column layout, strictly formatted for sidebars ~300px without squeezing)
   if (position === 'sidebar') {
-    const directEmail = 'gustavomourabarbosagmm@gmail.com';
+    const directEmail = 'americanbeacon@americanbeacon.online';
     const mailtoSubject = encodeURIComponent('Advertising Placement Inquiry — The American Beacon');
     const mailtoBody = encodeURIComponent(
-      'Hello Gustavo,\n\nI am interested in advertising on The American Beacon. Please send your 2026 media kit, available banner positions, and pricing.\n\nCompany / Agency:\nContact Name:\nEstimated Budget:\nTarget Launch Date:\n'
+      'Hello American Beacon Commercial Desk,\n\nI am interested in advertising on The American Beacon. Please send your 2026 media kit, available banner positions, and pricing.\n\nCompany / Agency:\nContact Name:\nEstimated Budget:\nTarget Launch Date:\n'
     );
     const mailtoUrl = `mailto:${directEmail}?subject=${mailtoSubject}&body=${mailtoBody}`;
 

@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
       email,
       budget: budget || '$10k-$25k',
       campaignGoals: campaignGoals || '',
-      recipientEmail: 'gustavomourabarbosagmm@gmail.com',
+      recipientEmail: 'americanbeacon@americanbeacon.online',
       createdAt: new Date().toISOString(),
       status: 'pending_review',
     };
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Inquiry successfully recorded and queued for commercial director gustavomourabarbosagmm@gmail.com.',
+      message: 'Inquiry successfully recorded and queued for commercial desk americanbeacon@americanbeacon.online.',
       inquiry,
     });
   } catch (error) {

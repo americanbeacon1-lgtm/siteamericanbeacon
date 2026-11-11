@@ -82,8 +82,8 @@ export default function ContactPage() {
               </div>
               <div>
                 <p className="font-bold text-neutral-900">Advertising & Sponsorships:</p>
-                <a href="mailto:gustavomourabarbosagmm@gmail.com?subject=Advertising%20Inquiry%20-%20The%20American%20Beacon" className="text-neutral-600 hover:text-red-700 underline">
-                  gustavomourabarbosagmm@gmail.com
+                <a href="mailto:americanbeacon@americanbeacon.online?subject=Advertising%20Inquiry%20-%20The%20American%20Beacon" className="text-neutral-600 hover:text-red-700 underline">
+                  americanbeacon@americanbeacon.online
                 </a>
               </div>
               <div>

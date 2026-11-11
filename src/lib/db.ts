@@ -71,7 +71,7 @@ const DEFAULT_ADS: AdSlot[] = [
       imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80',
       targetUrl: '/advertise',
       altText: 'Advertise on The American Beacon — Reach 2.4M+ US Decision Makers',
-      sponsorName: 'Commercial Advertising Desk • gustavomourabarbosagmm@gmail.com',
+      sponsorName: 'Commercial Advertising Desk • americanbeacon@americanbeacon.online',
       ctaText: 'Inquire via Email / Book Placement',
     },
   },
