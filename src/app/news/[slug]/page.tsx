@@ -14,6 +14,7 @@ import ArticleCard from '@/components/ArticleCard';
 import TrendingSidebar from '@/components/TrendingSidebar';
 import NewsImage from '@/components/NewsImage';
 import { getArticleOrigin } from '@/lib/content-origin';
+import { injectSemanticEntityLinks } from '@/lib/seo-mesh';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -141,7 +142,7 @@ export default async function ArticlePage({ params }: PageProps) {
       })
     : null;
 
-  // Schema.org NewsArticle JSON-LD
+  // Schema.org NewsArticle JSON-LD (Google News & Top Stories Optimization)
   const newsArticleSchema = {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',
@@ -154,14 +155,22 @@ export default async function ArticlePage({ params }: PageProps) {
     image: [article.imageUrl || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=1200&q=80'],
     datePublished: article.publishedAt,
     dateModified: article.updatedAt,
+    inLanguage: 'en-US',
+    isAccessibleForFree: 'True',
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', '.article-lead'],
+    },
     author: {
       '@type': 'Person',
       name: safeAuthor.name,
       jobTitle: safeAuthor.role,
+      url: 'https://www.americanbeacon.online/team',
     },
     publisher: {
       '@type': 'NewsMediaOrganization',
       name: 'The American Beacon',
+      url: 'https://www.americanbeacon.online',
       logo: {
         '@type': 'ImageObject',
         url: 'https://www.americanbeacon.online/icon.png',
@@ -171,12 +180,67 @@ export default async function ArticlePage({ params }: PageProps) {
     keywords: Array.isArray(article.tags) ? article.tags.join(', ') : 'U.S. News, Breaking News',
   };
 
+  // Google SERP Rich FAQ Schema from Key Takeaways
+  const faqSchema =
+    article.keyTakeaways && article.keyTakeaways.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: article.keyTakeaways.map((takeaway, idx) => ({
+            '@type': 'Question',
+            name: `What is the key verified fact regarding "${article.title.replace(/"/g, '')}" (Point ${idx + 1})?`,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: takeaway,
+            },
+          })),
+        }
+      : null;
+
+  // BreadcrumbList Schema for Google Search Snippet Hierarchy
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://www.americanbeacon.online',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: categoryInfo?.name || article.category,
+        item: `https://www.americanbeacon.online/category/${article.category}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: article.title,
+        item: `https://www.americanbeacon.online/news/${article.slug}`,
+      },
+    ],
+  };
+
+  const enrichedContent = injectSemanticEntityLinks(article.content, article.category);
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(newsArticleSchema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
 
       {/* Desktop Gutter Corner Ads (Left and Right Margins) */}
       <AdBanner position="corner_left" adSlot={cornerLeftAd} />
@@ -298,10 +362,10 @@ export default async function ArticlePage({ params }: PageProps) {
             {/* Key Takeaways Box */}
             <KeyTakeaways takeaways={article.keyTakeaways} />
 
-            {/* Formatted Journalistic Content */}
+            {/* Formatted Journalistic Content with Semantic Deep Linking */}
             <div
               className="article-content"
-              dangerouslySetInnerHTML={{ __html: article.content }}
+              dangerouslySetInnerHTML={{ __html: enrichedContent }}
             />
 
             {/* In-Article Ad Unit (Discreet & Clearly Disclosed) */}

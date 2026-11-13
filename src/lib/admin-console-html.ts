@@ -345,6 +345,9 @@ export function renderConsoleHTML(): string {
             <button onclick="triggerMonthHarvest(30)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer whitespace-nowrap">
               <i class="fa-solid fa-download"></i> Puxar 30 Dias Agora
             </button>
+            <button onclick="triggerIndexNowPing()" id="btn-indexnow-ping" class="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold text-xs uppercase tracking-wider px-4 py-3 rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer whitespace-nowrap">
+              <i class="fa-solid fa-bolt" id="indexnow-icon"></i> IndexNow Ping (SEO)
+            </button>
             <button onclick="switchTab('harvester')" class="border border-slate-700 hover:bg-slate-800/60 text-slate-300 font-bold text-xs uppercase tracking-wider px-4 py-3 rounded-xl transition">
               Configurar Feeds
             </button>
@@ -1184,6 +1187,28 @@ export function renderConsoleHTML(): string {
       } finally {
         btn.disabled = false;
         icon.className = 'fa-solid fa-satellite-dish';
+      }
+    }
+
+    async function triggerIndexNowPing() {
+      const btn = document.getElementById('btn-indexnow-ping');
+      const icon = document.getElementById('indexnow-icon');
+      if (btn) btn.disabled = true;
+      if (icon) icon.className = 'fa-solid fa-spinner animate-spin';
+      showToast('Disparando IndexNow e Google Ping para forçar indexação imediata...');
+      try {
+        const res = await fetch('/api/seo/ping-index', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message);
+        } else {
+          showToast('Falha no ping de SEO: ' + (data.error || ''), false);
+        }
+      } catch (e) {
+        showToast('Erro de conexão ao enviar pings de SEO.', false);
+      } finally {
+        if (btn) btn.disabled = false;
+        if (icon) icon.className = 'fa-solid fa-bolt';
       }
     }
 

@@ -90,7 +90,33 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  // 3. Article Pages
+  // 3. High-Value Long-Tail Search & Entity Hubs (Rapid Keyword Indexation)
+  const highValueEntities = [
+    'artificial-intelligence',
+    'cybersecurity',
+    'supreme-court',
+    'white-house',
+    'federal-reserve',
+    'wall-street',
+    'pentagon',
+    'senate',
+    'congress',
+    'inflation',
+    'semiconductors',
+    'national-security',
+    'clean-energy',
+    'stock-market',
+    'healthcare-policy',
+  ];
+
+  const searchPages: MetadataRoute.Sitemap = highValueEntities.map((kw) => ({
+    url: `${baseUrl}/search?q=${encodeURIComponent(kw.replace(/-/g, ' '))}`,
+    lastModified: new Date(),
+    changeFrequency: 'daily',
+    priority: 0.75,
+  }));
+
+  // 4. Article Pages
   const articlePages: MetadataRoute.Sitemap = articles.map((art) => ({
     url: `${baseUrl}/news/${art.slug}`,
     lastModified: new Date(art.updatedAt || art.publishedAt),
@@ -98,5 +124,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: art.isFeaturedLead ? 0.95 : 0.85,
   }));
 
-  return [...staticPages, ...categoryPages, ...articlePages];
+  return [...staticPages, ...categoryPages, ...searchPages, ...articlePages];
 }

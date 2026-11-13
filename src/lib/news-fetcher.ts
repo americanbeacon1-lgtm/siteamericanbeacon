@@ -416,6 +416,13 @@ export async function syncAllFeeds(options?: {
     // Persist to shared cloud store with full await
     await saveRecentArticlesToCloud(newlySaved).catch(() => false);
     await batchSaveArticlesToCloud(newlySaved).catch(() => ({ saved: 0, failed: 0 }));
+
+    // Instant High-Velocity SEO Ping to Google & IndexNow (Bing/Yandex/Yahoo)
+    try {
+      const { pingSearchEngines } = await import('@/lib/seo-mesh');
+      const pingUrls = newlySaved.slice(0, 50).map((a) => `/news/${a.slug}`);
+      pingSearchEngines(pingUrls).catch(() => {});
+    } catch (e) {}
   }
 
   return {
