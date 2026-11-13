@@ -3,6 +3,7 @@ import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MobileBottomNav from '@/components/MobileBottomNav';
+import AdSenseShield from '@/components/AdSenseShield';
 import { db } from '@/lib/db';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -144,14 +145,10 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
-        {/* Google AdSense Official Script */}
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4875140581206437"
-          crossOrigin="anonymous"
-        />
       </head>
       <body className="flex flex-col min-h-screen bg-white overflow-x-hidden">
+        {/* AdSense Anti-Bot Human Interaction Shield */}
+        <AdSenseShield />
         <Header />
         <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 pb-20 md:pb-6">
           {children}
