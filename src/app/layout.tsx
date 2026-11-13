@@ -144,14 +144,12 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
-        {/* AdSense Publisher Script Placeholder */}
-        {settings.adsensePublisherId && (
-          <script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${settings.adsensePublisherId}`}
-            crossOrigin="anonymous"
-          />
-        )}
+        {/* Google AdSense Official Script */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4875140581206437"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className="flex flex-col min-h-screen bg-white overflow-x-hidden">
         <Header />

@@ -35,8 +35,8 @@ const DEFAULT_SETTINGS: SiteSettings = {
   address: 'Washington, D.C., United States',
   googleAnalyticsId: 'G-ABN2026US99',
   googleSearchConsoleTag: 'google-site-verification=BeaconUSAuth2026OfficialJournalism',
-  adsensePublisherId: 'ca-pub-9842104820194821',
-  adsTxtContent: `google.com, pub-9842104820194821, DIRECT, f08c47fec0942fa0
+  adsensePublisherId: 'ca-pub-4875140581206437',
+  adsTxtContent: `google.com, pub-4875140581206437, DIRECT, f08c47fec0942fa0
 rubiconproject.com, 14209, RESELLER, 0bfd66d529a55803
 appnexus.com, 2841, RESELLER, f5ab79cb980f11d1
 openx.com, 537142, RESELLER, 6a698e2ec38604c6`,

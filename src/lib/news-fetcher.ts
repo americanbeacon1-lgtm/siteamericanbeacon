@@ -7,78 +7,327 @@ import { saveRecentArticlesToCloud, saveSingleArticleToCloud, batchSaveArticlesT
 export { US_NEWS_FEEDS };
 export type { NewsFeedSource };
 
-const CATEGORY_DEFAULT_IMAGES: Record<CategorySlug, { url: string; caption: string; credit: string }> = {
-  'breaking-news': {
-    url: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=1600&q=80',
-    caption: 'Capitol Hill and national press briefings in Washington, D.C.',
-    credit: 'The American Beacon / AP Photo / Wire',
-  },
-  'us-news': {
-    url: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1600&q=80',
-    caption: 'United States Supreme Court and federal appellate courts.',
-    credit: 'Unsplash / Editorial Photography',
-  },
-  'politics': {
-    url: 'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?auto=format&fit=crop&w=1600&q=80',
-    caption: 'The United States Capitol dome at dusk under illuminated rotunda lighting.',
-    credit: 'Unsplash / Editorial Photography',
-  },
-  'business': {
-    url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80',
-    caption: 'Corporate enterprise and Fortune 500 headquarters.',
-    credit: 'Unsplash / Commercial Photography',
-  },
-  'finance': {
-    url: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1600&q=80',
-    caption: 'The Federal Reserve Eccles Building and Wall Street exchanges.',
-    credit: 'Unsplash / Financial Photography',
-  },
-  'technology': {
-    url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80',
-    caption: 'Silicon Valley semiconductor fabrication and quantum hardware.',
-    credit: 'Unsplash / Tech Archive',
-  },
-  'artificial-intelligence': {
-    url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1600&q=80',
-    caption: 'High-density GPU compute cluster powering autonomous reasoning.',
-    credit: 'The American Beacon / Cloud Systems / Handout',
-  },
-  'world-news': {
-    url: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1600&q=80',
-    caption: 'Allied diplomatic summits and global maritime corridors.',
-    credit: 'The American Beacon / NATO Public Affairs / Wire',
-  },
-  'entertainment': {
-    url: 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=1600&q=80',
-    caption: 'Midtown Manhattan theater district and Hollywood premieres.',
-    credit: 'The American Beacon / Chloe Dupont / Splash News',
-  },
-  'health': {
-    url: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1600&q=80',
-    caption: 'NIH clinical trials and molecular pharmacology research.',
-    credit: 'The American Beacon / NIH Media / Handout',
-  },
-  'lifestyle': {
-    url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80',
-    caption: 'Modern American residential architecture and living.',
-    credit: 'The American Beacon / Architectural Digest / Handout',
-  },
-  'science': {
-    url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80',
-    caption: 'NASA deep space missions and astrophysics observations.',
-    credit: 'The American Beacon / NASA / STScI / ESA',
-  },
-  'travel': {
-    url: 'https://images.unsplash.com/photo-1510312305653-8ed496efae75?auto=format&fit=crop&w=1600&q=80',
-    caption: 'Scenic American Western landscapes and luxury rail travel.',
-    credit: 'The American Beacon / Alamy Stock Photo',
-  },
-  'sports': {
-    url: 'https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?auto=format&fit=crop&w=1600&q=80',
-    caption: 'Under the stadium lights during prime-time championship play.',
-    credit: 'The American Beacon / USA Today Sports / AP',
-  },
+const CATEGORY_IMAGE_POOLS: Record<CategorySlug, Array<{ url: string; caption: string; credit: string }>> = {
+  'breaking-news': [
+    {
+      url: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Capitol Hill and national press briefings in Washington, D.C.',
+      credit: 'The American Beacon / AP Wire',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Breaking national reporting desk and continuous live wire monitor.',
+      credit: 'Unsplash / Newsroom Dispatch',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Broadsheet printing presses rolling with evening national editions.',
+      credit: 'The American Beacon / Press Archives',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Metropolitan district news helicopter and aerial reconnaissance.',
+      credit: 'Unsplash / Metropolitan Wire',
+    },
+  ],
+  'us-news': [
+    {
+      url: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1600&q=80',
+      caption: 'United States Supreme Court and federal appellate courts.',
+      credit: 'Unsplash / Legal Affairs',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1575517111478-7f6afd0973db?auto=format&fit=crop&w=1600&q=80',
+      caption: 'American flags flanking historic civic and state government chambers.',
+      credit: 'Unsplash / National Heritage',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Washington, D.C. monuments along the National Mall under sunrise.',
+      credit: 'The American Beacon / Staff',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Federal courthouse entrance and Department of Justice proceedings.',
+      credit: 'Unsplash / Legal Records',
+    },
+  ],
+  'politics': [
+    {
+      url: 'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?auto=format&fit=crop&w=1600&q=80',
+      caption: 'The United States Capitol dome at dusk under illuminated rotunda lighting.',
+      credit: 'Unsplash / Congressional Bureau',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=1600&q=80',
+      caption: 'The White House West Wing and executive office complex in Washington, D.C.',
+      credit: 'The American Beacon / White House Bureau',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Congressional committee hearing chamber on Capitol Hill.',
+      credit: 'Unsplash / Capitol Photography',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Official voting ballots and legislative tally records.',
+      credit: 'The American Beacon / Politics Desk',
+    },
+  ],
+  'business': [
+    {
+      url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Corporate enterprise and Fortune 500 headquarters in Lower Manhattan.',
+      credit: 'Unsplash / Commercial Photography',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Executive boardroom negotiations and commercial restructuring.',
+      credit: 'Unsplash / Business Intelligence',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Corporate balance sheets, financial auditing, and strategic filings.',
+      credit: 'The American Beacon / Markets Desk',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Enterprise conference center and corporate trade summit.',
+      credit: 'Unsplash / Enterprise Wire',
+    },
+  ],
+  'finance': [
+    {
+      url: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1600&q=80',
+      caption: 'The Federal Reserve Eccles Building and Wall Street exchanges.',
+      credit: 'Unsplash / Financial Photography',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Financial ticker boards displaying equity, bond, and currency yields.',
+      credit: 'The American Beacon / Wall Street Bureau',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Institutional trading floor overlooking international liquidity flows.',
+      credit: 'Unsplash / Capital Markets',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Central bank monetary policy indicators and sovereign debt metrics.',
+      credit: 'The American Beacon / Fed Watch',
+    },
+  ],
+  'technology': [
+    {
+      url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Silicon Valley semiconductor fabrication and quantum hardware.',
+      credit: 'Unsplash / Tech Archive',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Cybersecurity defense architecture and cryptographic network code.',
+      credit: 'Unsplash / Cyber Threat Desk',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1600&q=80',
+      caption: 'High-speed fiber-optic data transmission and hyperscale infrastructure.',
+      credit: 'The American Beacon / Tech Wire',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Silicon Valley headquarters and consumer electronics design labs.',
+      credit: 'Unsplash / Silicon Valley Bureau',
+    },
+  ],
+  'artificial-intelligence': [
+    {
+      url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1600&q=80',
+      caption: 'High-density GPU compute cluster powering autonomous reasoning.',
+      credit: 'The American Beacon / Cloud Systems / Handout',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Neural network architecture models and deep generative inference.',
+      credit: 'Unsplash / AI Research',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Cognitive computing algorithms and transformer model weights.',
+      credit: 'The American Beacon / AI Frontier',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Advanced autonomous agent robotics and computer vision telemetry.',
+      credit: 'Unsplash / Robotics Desk',
+    },
+  ],
+  'world-news': [
+    {
+      url: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Allied diplomatic summits and global maritime corridors.',
+      credit: 'The American Beacon / NATO Public Affairs / Wire',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Global satellite telemetry monitoring geopolitical hotspots.',
+      credit: 'Unsplash / Satellite Intelligence',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1600&q=80',
+      caption: 'International summits, embassies, and multilateral delegations.',
+      credit: 'The American Beacon / Foreign Desk',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=1600&q=80',
+      caption: 'United Nations General Assembly and diplomatic council sessions.',
+      credit: 'Unsplash / Diplomatic Records',
+    },
+  ],
+  'entertainment': [
+    {
+      url: 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Midtown Manhattan theater district and Hollywood premieres.',
+      credit: 'The American Beacon / Chloe Dupont / Splash News',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Cinema auditorium and studio motion picture distribution.',
+      credit: 'Unsplash / Hollywood Desk',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Major arena concert tours and recording industry galas.',
+      credit: 'The American Beacon / Entertainment Wire',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Global music festival main stage and streaming media productions.',
+      credit: 'Unsplash / Culture Photography',
+    },
+  ],
+  'health': [
+    {
+      url: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1600&q=80',
+      caption: 'NIH clinical trials and molecular pharmacology research.',
+      credit: 'The American Beacon / NIH Media / Handout',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Medical medical center surgery suites and patient care wards.',
+      credit: 'Unsplash / Medical Archives',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Pharmaceutical research laboratory and biotechnology development.',
+      credit: 'The American Beacon / Health Sciences Desk',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Healthcare diagnostics and medical imaging telemetry.',
+      credit: 'Unsplash / Clinical Records',
+    },
+  ],
+  'lifestyle': [
+    {
+      url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Modern American residential architecture and living.',
+      credit: 'The American Beacon / Architectural Digest / Handout',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Coastal modern real estate and luxury lifestyle properties.',
+      credit: 'Unsplash / Design Wire',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Contemporary urban living and boutique retail avenues.',
+      credit: 'The American Beacon / Style Desk',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Interior architectural aesthetics and residential living spaces.',
+      credit: 'Unsplash / Living Archives',
+    },
+  ],
+  'science': [
+    {
+      url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80',
+      caption: 'NASA deep space missions and astrophysics observations.',
+      credit: 'The American Beacon / NASA / STScI / ESA',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Astrophysics research observatory telescopes under starry skies.',
+      credit: 'Unsplash / Space Science',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1518152006812-edab29b069ac?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Quantum physics laboratory laser spectroscopy experiments.',
+      credit: 'The American Beacon / Science Desk',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Molecular biology microscopy and genomics research assays.',
+      credit: 'Unsplash / Scientific Research',
+    },
+  ],
+  'travel': [
+    {
+      url: 'https://images.unsplash.com/photo-1510312305653-8ed496efae75?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Scenic American Western landscapes and luxury rail travel.',
+      credit: 'The American Beacon / Alamy Stock Photo',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Commercial aviation over continental alpine ranges at sunset.',
+      credit: 'Unsplash / Aviation Wire',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Pristine mountain alpine lakes and national park destinations.',
+      credit: 'The American Beacon / Travel Bureau',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Yosemite Valley waterfall and American wilderness exploration.',
+      credit: 'Unsplash / Scenic Photography',
+    },
+  ],
+  'sports': [
+    {
+      url: 'https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Under the stadium lights during prime-time championship play.',
+      credit: 'The American Beacon / USA Today Sports / AP',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1600&q=80',
+      caption: 'NFL football stadium field hashmarks under dusk floodlights.',
+      credit: 'Unsplash / Sports Photography',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Major league basketball court hardwood and competition arena.',
+      credit: 'The American Beacon / Sports Wire',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1600&q=80',
+      caption: 'Championship soccer tournament match under stadium floodlights.',
+      credit: 'Unsplash / Athletic Records',
+    },
+  ],
 };
+
+function getDiverseEditorialImage(category: CategorySlug, slug: string): { url: string; caption: string; credit: string } {
+  const pool = CATEGORY_IMAGE_POOLS[category] || CATEGORY_IMAGE_POOLS['breaking-news'];
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) {
+    hash = (hash << 5) - hash + slug.charCodeAt(i);
+    hash |= 0;
+  }
+  const idx = Math.abs(hash) % pool.length;
+  return pool[idx];
+}
 
 function isValidImgCandidate(url?: string | null): boolean {
   if (!url || typeof url !== 'string') return false;
@@ -101,36 +350,103 @@ function isValidImgCandidate(url?: string | null): boolean {
 }
 
 function extractImageUrl(item: any): string | null {
-  if (item['media:content']) {
-    const media = item['media:content'];
+  if (!item) return null;
+
+  // 1. Check media:content (standalone, in media:group, single or array)
+  const mediaSources = [
+    item['media:content'],
+    item['media:group']?.['media:content'],
+    item['media:thumbnail'],
+    item['media:group']?.['media:thumbnail'],
+  ];
+
+  for (const media of mediaSources) {
+    if (!media) continue;
     if (Array.isArray(media)) {
       const best = media.find(
-        (m) => m['@_url'] && isValidImgCandidate(m['@_url']) && (m['@_medium'] === 'image' || m['@_url'].match(/\.(jpg|jpeg|png|webp)/i))
+        (m) =>
+          m &&
+          m['@_url'] &&
+          isValidImgCandidate(m['@_url']) &&
+          (m['@_medium'] === 'image' || m['@_url'].match(/\.(jpg|jpeg|png|webp|avif)/i))
       );
-      if (best && best['@_url'] && isValidImgCandidate(best['@_url'])) return best['@_url'];
-      const anyValid = media.find((m) => m['@_url'] && isValidImgCandidate(m['@_url']));
+      if (best && best['@_url']) return best['@_url'];
+      const anyValid = media.find((m) => m && m['@_url'] && isValidImgCandidate(m['@_url']));
       if (anyValid && anyValid['@_url']) return anyValid['@_url'];
     } else if (media['@_url'] && isValidImgCandidate(media['@_url'])) {
       return media['@_url'];
     }
   }
 
+  // 2. Check enclosure (single or array)
   if (item['enclosure']) {
     const enc = item['enclosure'];
-    if (enc['@_url'] && isValidImgCandidate(enc['@_url']) && (!enc['@_type'] || enc['@_type'].startsWith('image'))) {
+    if (Array.isArray(enc)) {
+      const imgEnc = enc.find(
+        (e) =>
+          e &&
+          e['@_url'] &&
+          isValidImgCandidate(e['@_url']) &&
+          (!e['@_type'] || e['@_type'].startsWith('image'))
+      );
+      if (imgEnc && imgEnc['@_url']) return imgEnc['@_url'];
+    } else if (enc['@_url'] && isValidImgCandidate(enc['@_url']) && (!enc['@_type'] || enc['@_type'].startsWith('image'))) {
       return enc['@_url'];
     }
   }
 
-  if (item['media:thumbnail'] && item['media:thumbnail']['@_url'] && isValidImgCandidate(item['media:thumbnail']['@_url'])) {
-    return item['media:thumbnail']['@_url'];
+  // 3. Check iTunes, Atom or RSS image
+  if (item['itunes:image']?.['@_href'] && isValidImgCandidate(item['itunes:image']['@_href'])) {
+    return item['itunes:image']['@_href'];
+  }
+  if (item['image']?.url && isValidImgCandidate(item['image'].url)) {
+    return item['image'].url;
+  }
+  if (item['image']?.['#text'] && isValidImgCandidate(item['image']['#text'])) {
+    return item['image']['#text'];
   }
 
-  const rawHtml = item['content:encoded'] || item.description || '';
-  const imgMatches = rawHtml.matchAll(/<img[^>]+src=["']([^"']+)["']/gi);
-  for (const match of imgMatches) {
-    if (match[1] && isValidImgCandidate(match[1])) {
-      return match[1];
+  // 4. Check HTML in content:encoded, description, summary or body.content
+  const htmlCandidates = [
+    item['content:encoded'],
+    item.description,
+    item.summary,
+    item['body.content'],
+  ];
+
+  for (const raw of htmlCandidates) {
+    if (!raw) continue;
+    let text = '';
+    if (typeof raw === 'string') {
+      text = raw;
+    } else if (typeof raw === 'object' && raw['#text']) {
+      text = String(raw['#text']);
+    }
+
+    if (!text) continue;
+
+    // Decode escaped HTML entities if present (&lt;img ... &gt;)
+    if (text.includes('&lt;img') || text.includes('&lt;IMG')) {
+      text = text
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&amp;/g, '&');
+    }
+
+    // Match <img src="..." or data-src="..." or data-original="..."
+    const imgMatches = text.matchAll(/<img[^>]+(?:src|data-src|data-original)=["']([^"']+)["']/gi);
+    for (const match of imgMatches) {
+      if (match[1] && isValidImgCandidate(match[1])) {
+        let clean = match[1].replace(/&amp;/g, '&');
+        // Handle Yahoo zenfs proxy URLs
+        const zenfsMatch = clean.match(/https%3A%2F%2F(media\.zenfs\.com[^&]+)/i);
+        if (zenfsMatch) {
+          clean = decodeURIComponent('https://' + zenfsMatch[1]);
+        }
+        return clean;
+      }
     }
   }
 
@@ -282,12 +598,12 @@ export async function fetchFromFeed(feed: NewsFeedSource, options?: FetchOptions
       const authorName = item['dc:creator'] || item.author?.name || `${feed.outlet} National Desk`;
 
       let imageUrl = extractImageUrl(item);
-      const defaultImg = CATEGORY_DEFAULT_IMAGES[feed.category];
+      const fallback = getDiverseEditorialImage(feed.category, slug);
       if (!imageUrl) {
-        imageUrl = `${defaultImg.url}&sig=${encodeURIComponent(slug.slice(0, 30))}`;
+        imageUrl = fallback.url;
       }
-      const imageCredit = item['media:credit'] || `${feed.outlet} / Syndication Wire`;
-      const imageCaption = item['media:description'] || `${feed.name} national report: ${title}`;
+      const imageCredit = item['media:credit'] || (imageUrl === fallback.url ? fallback.credit : `${feed.outlet} / Syndication Wire`);
+      const imageCaption = item['media:description'] || (imageUrl === fallback.url ? fallback.caption : `${feed.name} national report: ${title}`);
 
       const richContent = `
         <p class="article-lead">${cleanDesc || `${title} — Reported live from Washington, D.C. and regional newsrooms across the United States.`}</p>

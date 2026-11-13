@@ -1,9 +1,60 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { ExternalLink, Info, X, Mail, Sparkles, TrendingUp } from 'lucide-react';
 import { AdPosition, AdSlot } from '@/types';
+
+export const GOOGLE_ADSENSE_PUB_ID = 'ca-pub-4875140581206437';
+
+export function GoogleAdSlot({
+  client = GOOGLE_ADSENSE_PUB_ID,
+  slot = 'auto',
+  format = 'auto',
+  responsive = true,
+  style = { display: 'block' },
+  className = '',
+}: {
+  client?: string;
+  slot?: string;
+  format?: string;
+  responsive?: boolean;
+  style?: React.CSSProperties;
+  className?: string;
+}) {
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (initialized.current) return;
+    try {
+      if (typeof window !== 'undefined') {
+        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+        initialized.current = true;
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  return (
+    <div className={`google-adsense-unit w-full overflow-hidden text-center my-1.5 ${className}`}>
+      {/* Google AdSense Official Script Tag */}
+      <script
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`}
+        crossOrigin="anonymous"
+      />
+      <ins
+        className="adsbygoogle"
+        style={style}
+        data-ad-client={client}
+        data-ad-slot={slot}
+        data-ad-format={format}
+        data-full-width-responsive={responsive ? 'true' : 'false'}
+      />
+    </div>
+  );
+}
 
 interface AdBannerProps {
   position: AdPosition;
@@ -118,6 +169,9 @@ export default function AdBanner({ position, adSlot, className = '' }: AdBannerP
           </button>
         </div>
 
+        {/* Google AdSense Placement */}
+        <GoogleAdSlot style={{ display: 'block', minHeight: '120px', width: '100%' }} />
+
         {rawHtml ? (
           <div
             dangerouslySetInnerHTML={{ __html: rawHtml }}
@@ -169,6 +223,8 @@ export default function AdBanner({ position, adSlot, className = '' }: AdBannerP
         </div>
 
         <div className="w-40 min-h-[600px] border border-neutral-300 bg-neutral-50 rounded p-2 text-center shadow-md flex flex-col justify-between">
+          {/* Google AdSense Gutter Unit */}
+          <GoogleAdSlot style={{ display: 'inline-block', width: '144px', minHeight: '300px' }} format="vertical" />
           {rawHtml ? (
             <div
               dangerouslySetInnerHTML={{ __html: rawHtml }}
@@ -236,7 +292,9 @@ export default function AdBanner({ position, adSlot, className = '' }: AdBannerP
         </div>
 
         {/* Executive Chamativo Card */}
-        <div className="w-full border-2 border-neutral-900 bg-gradient-to-b from-[#0b1220] via-[#0f172a] to-[#070b14] text-white rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
+        <div className="w-full border-2 border-neutral-900 bg-gradient-to-b from-[#0b1220] via-[#0f172a] to-[#070b14] text-white rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 p-2 sm:p-3">
+          {/* Google AdSense Sidebar Placement */}
+          <GoogleAdSlot style={{ display: 'block', minHeight: '250px', width: '100%' }} className="mb-2 bg-white/5 rounded p-1" />
           {rawHtml ? (
             <div
               dangerouslySetInnerHTML={{ __html: rawHtml }}
@@ -345,6 +403,9 @@ export default function AdBanner({ position, adSlot, className = '' }: AdBannerP
 
       {/* Ad Box Container */}
       <div className="w-full max-w-5xl border border-neutral-200 bg-neutral-50 rounded p-4 text-center relative overflow-hidden shadow-2xs hover:border-neutral-300 transition">
+        {/* Google AdSense Responsive Leaderboard / Banner */}
+        <GoogleAdSlot style={{ display: 'block', minHeight: '90px', width: '100%' }} className="mb-3" />
+
         {rawHtml ? (
           <div
             dangerouslySetInnerHTML={{ __html: rawHtml }}
