@@ -16,8 +16,8 @@ interface LatestNewsFeedProps {
 }
 
 const CATEGORY_TABS: { label: string; value: string }[] = [
-  { label: 'Todas as Notícias', value: 'all' },
-  { label: 'Plantão / Breaking', value: 'breaking-news' },
+  { label: 'All Dispatches', value: 'all' },
+  { label: 'Breaking News', value: 'breaking-news' },
   { label: 'U.S. News', value: 'us-news' },
   { label: 'Politics', value: 'politics' },
   { label: 'Business & Finance', value: 'business' },
@@ -29,8 +29,8 @@ const CATEGORY_TABS: { label: string; value: string }[] = [
 
 export default function LatestNewsFeed({
   articles = [],
-  title = 'Plantão Contínuo de Notícias Recentes',
-  subtitle = 'Todas as reportagens extraídas e atualizadas dos principais veículos dos Estados Unidos.',
+  title = 'Continuous National News Wire • U.S. Dispatches',
+  subtitle = 'Chronological verified reporting, policy analysis, and wire dispatches from national correspondents.',
 }: LatestNewsFeedProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [visibleCount, setVisibleCount] = useState<number>(18);
@@ -77,7 +77,7 @@ export default function LatestNewsFeed({
         <div>
           <div className="flex items-center gap-2 text-red-700 text-xs font-black uppercase tracking-widest mb-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse"></span>
-            <span>WIRE DESK EM TEMPO REAL</span>
+            <span>REAL-TIME WIRE DESK</span>
           </div>
           <h2 className="font-serif text-2xl sm:text-3xl font-black text-neutral-950 uppercase tracking-tight">
             {title}
@@ -91,7 +91,7 @@ export default function LatestNewsFeed({
         <div className="flex items-center gap-2 text-xs font-mono bg-neutral-100 text-neutral-700 px-3 py-1.5 rounded-full border border-neutral-200 self-start md:self-auto">
           <Newspaper className="w-3.5 h-3.5 text-red-700" />
           <span>
-            Exibindo <strong>{displayedArticles.length}</strong> de <strong>{filteredArticles.length}</strong> matérias
+            Showing <strong>{displayedArticles.length}</strong> of <strong>{filteredArticles.length}</strong> stories
           </span>
         </div>
       </div>

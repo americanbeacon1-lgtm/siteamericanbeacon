@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { syncAllFeeds } from '@/lib/news-fetcher';
-import { saveRecentArticlesToCloud, saveSingleArticleToCloud } from '@/lib/cloud-store';
+import { saveRecentArticlesToCloud, batchSaveArticlesToCloud } from '@/lib/cloud-store';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,9 +19,7 @@ export async function POST(req: NextRequest) {
 
     if (result.articles && result.articles.length > 0) {
       await saveRecentArticlesToCloud(result.articles);
-      for (const art of result.articles.slice(0, 50)) {
-        saveSingleArticleToCloud(art).catch(() => {});
-      }
+      await batchSaveArticlesToCloud(result.articles);
     }
 
     const periodDescription = result.exactDay
@@ -33,7 +32,7 @@ export async function POST(req: NextRequest) {
       daysHarvested: result.daysBack,
       exactDay: result.exactDay,
       feedsProcessed: result.feedsProcessed,
-      articles: result.articles.slice(0, 50),
+      articles: result.articles.slice(0, 100),
       message: `Sucesso! ${result.totalSaved} notícias ${periodDescription} foram extraídas e sincronizadas no portal!`,
     });
   } catch (error: any) {

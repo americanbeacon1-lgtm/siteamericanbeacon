@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { syncAllFeeds, US_NEWS_FEEDS } from '@/lib/news-fetcher';
 
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
+
 export async function GET() {
   return NextResponse.json({
     availableFeeds: US_NEWS_FEEDS.map((f) => ({

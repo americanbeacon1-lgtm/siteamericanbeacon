@@ -2,7 +2,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { db } from '@/lib/db';
 import { Article, CategorySlug } from '@/types';
 import { US_NEWS_FEEDS, NewsFeedSource } from '@/data/news-feeds';
-import { saveRecentArticlesToCloud, saveSingleArticleToCloud } from '@/lib/cloud-store';
+import { saveRecentArticlesToCloud, saveSingleArticleToCloud, batchSaveArticlesToCloud } from '@/lib/cloud-store';
 
 export { US_NEWS_FEEDS };
 export type { NewsFeedSource };
@@ -282,12 +282,9 @@ export async function fetchFromFeed(feed: NewsFeedSource, options?: FetchOptions
       const authorName = item['dc:creator'] || item.author?.name || `${feed.outlet} National Desk`;
 
       let imageUrl = extractImageUrl(item);
-      if (!imageUrl && originalLink) {
-        imageUrl = await fetchOgImageFromLink(originalLink);
-      }
       const defaultImg = CATEGORY_DEFAULT_IMAGES[feed.category];
       if (!imageUrl) {
-        imageUrl = `${defaultImg.url}&sig=${slug}`;
+        imageUrl = `${defaultImg.url}&sig=${encodeURIComponent(slug.slice(0, 30))}`;
       }
       const imageCredit = item['media:credit'] || `${feed.outlet} / Syndication Wire`;
       const imageCaption = item['media:description'] || `${feed.name} national report: ${title}`;
@@ -355,6 +352,8 @@ export async function fetchFromFeed(feed: NewsFeedSource, options?: FetchOptions
         },
       };
 
+      existingTitles.add(title.toLowerCase().trim());
+      existingSlugs.add(slug);
       articles.push(article);
     }
 
@@ -387,37 +386,43 @@ export async function syncAllFeeds(options?: {
     : US_NEWS_FEEDS;
 
   let totalSaved = 0;
-  const newlySaved: Article[] = [];
+  const allFetched: Article[] = [];
 
-  for (const feed of targetFeeds) {
-    const fetched = await fetchFromFeed(feed, { maxItems: maxPerFeed, daysBack, exactDay });
-    for (const art of fetched) {
-      try {
-        db.saveArticle(art);
-        newlySaved.push(art);
-        totalSaved++;
-      } catch (e) {
-        console.error('Error saving imported article:', e);
+  // Fetch feeds in concurrent batches of 4 to stay well within network limits and fast
+  const FEED_BATCH_SIZE = 4;
+  for (let i = 0; i < targetFeeds.length; i += FEED_BATCH_SIZE) {
+    const chunk = targetFeeds.slice(i, i + FEED_BATCH_SIZE);
+    const chunkResults = await Promise.allSettled(
+      chunk.map((feed) => fetchFromFeed(feed, { maxItems: maxPerFeed, daysBack, exactDay }))
+    );
+    for (const res of chunkResults) {
+      if (res.status === 'fulfilled' && Array.isArray(res.value)) {
+        allFetched.push(...res.value);
       }
     }
   }
 
+  // Atomically save all newly imported articles in a single write operation
+  const newlySaved = db.saveArticles(allFetched);
+  totalSaved = newlySaved.length;
+
   if (newlySaved.length > 0) {
-    db.updateSettings({
-      breakingNewsAlert: newlySaved[0].title,
-    });
-    // Persist to shared cloud store so all Vercel serverless lambdas see them immediately
-    saveRecentArticlesToCloud(newlySaved).catch(() => {});
-    for (const art of newlySaved.slice(0, 50)) {
-      saveSingleArticleToCloud(art).catch(() => {});
-    }
+    try {
+      db.updateSettings({
+        breakingNewsAlert: newlySaved[0].title,
+      });
+    } catch (e) {}
+
+    // Persist to shared cloud store with full await
+    await saveRecentArticlesToCloud(newlySaved).catch(() => false);
+    await batchSaveArticlesToCloud(newlySaved).catch(() => ({ saved: 0, failed: 0 }));
   }
 
   return {
-    totalFetched: newlySaved.length,
+    totalFetched: allFetched.length,
     totalSaved,
     feedsProcessed: targetFeeds.length,
-    articles: newlySaved,
+    articles: newlySaved.length > 0 ? newlySaved : allFetched,
     daysBack,
     exactDay,
   };

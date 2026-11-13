@@ -4,7 +4,7 @@ const KV_BASE = 'https://kvdb.io/12rW1J2aDFpkXPUJj5ThfS';
 
 let lastFetchTime = 0;
 let cachedCloudArticles: Article[] = [];
-const CACHE_TTL_MS = 15000; // 15 seconds memory cache
+const CACHE_TTL_MS = 25000; // 25 seconds memory cache
 
 export async function saveRecentArticlesToCloud(newArticles: Article[]): Promise<boolean> {
   if (!newArticles || newArticles.length === 0) return false;
@@ -15,19 +15,27 @@ export async function saveRecentArticlesToCloud(newArticles: Article[]): Promise
     // Put new articles first
     for (const art of newArticles) {
       if (art && art.slug) {
-        map.set(art.slug.toLowerCase(), art);
+        map.set(art.slug.toLowerCase().trim(), art);
       }
     }
     // Then existing articles
     for (const art of existing) {
-      if (art && art.slug && !map.has(art.slug.toLowerCase())) {
-        map.set(art.slug.toLowerCase(), art);
+      if (art && art.slug) {
+        const key = art.slug.toLowerCase().trim();
+        if (!map.has(key)) {
+          map.set(key, art);
+        }
       }
     }
 
-    const payload = Array.from(map.values()).slice(0, 300);
+    // Keep the top 75 most recent articles with full content (~180KB total)
+    // This fits easily within KV limits and uploads in under 1 second without timing out
+    const payload = Array.from(map.values()).slice(0, 75);
+    cachedCloudArticles = payload;
+    lastFetchTime = Date.now();
+
     const ctrl = new AbortController();
-    const timeout = setTimeout(() => ctrl.abort(), 4000);
+    const timeout = setTimeout(() => ctrl.abort(), 7000);
 
     const res = await fetch(`${KV_BASE}/recent_articles`, {
       method: 'POST',
@@ -37,8 +45,6 @@ export async function saveRecentArticlesToCloud(newArticles: Article[]): Promise
     });
     clearTimeout(timeout);
 
-    cachedCloudArticles = payload;
-    lastFetchTime = Date.now();
     return res.ok;
   } catch (error) {
     console.warn('[CloudStore] Failed to save recent articles:', error);
@@ -50,7 +56,7 @@ export async function saveSingleArticleToCloud(article: Article): Promise<boolea
   if (!article || !article.slug) return false;
   try {
     const ctrl = new AbortController();
-    const timeout = setTimeout(() => ctrl.abort(), 3000);
+    const timeout = setTimeout(() => ctrl.abort(), 2500);
 
     const cleanSlug = article.slug.toLowerCase().trim();
     const res = await fetch(`${KV_BASE}/art_${cleanSlug}`, {
@@ -66,6 +72,28 @@ export async function saveSingleArticleToCloud(article: Article): Promise<boolea
   }
 }
 
+/**
+ * Fast parallel saver for top dispatches (up to 20 articles in parallel),
+ * ensuring individual cloud endpoints are immediately ready.
+ */
+export async function batchSaveArticlesToCloud(articles: Article[]): Promise<{ saved: number; failed: number }> {
+  if (!articles || articles.length === 0) return { saved: 0, failed: 0 };
+
+  const target = articles.slice(0, 20);
+  const results = await Promise.allSettled(target.map((art) => saveSingleArticleToCloud(art)));
+  let saved = 0;
+  let failed = 0;
+  for (const r of results) {
+    if (r.status === 'fulfilled' && r.value) {
+      saved++;
+    } else {
+      failed++;
+    }
+  }
+
+  return { saved, failed };
+}
+
 export async function fetchRecentArticlesFromCloud(): Promise<Article[]> {
   const now = Date.now();
   if (cachedCloudArticles.length > 0 && now - lastFetchTime < CACHE_TTL_MS) {
@@ -74,7 +102,7 @@ export async function fetchRecentArticlesFromCloud(): Promise<Article[]> {
 
   try {
     const ctrl = new AbortController();
-    const timeout = setTimeout(() => ctrl.abort(), 3500);
+    const timeout = setTimeout(() => ctrl.abort(), 4000);
 
     const res = await fetch(`${KV_BASE}/recent_articles`, {
       signal: ctrl.signal,
@@ -102,9 +130,18 @@ export async function fetchSingleArticleFromCloud(slug: string): Promise<Article
   if (!slug) return null;
   const cleanSlug = decodeURIComponent(slug).toLowerCase().trim();
 
+  // 1. Instant check in memory cached articles
+  if (cachedCloudArticles.length > 0) {
+    const found = cachedCloudArticles.find(
+      (a) => a.slug?.toLowerCase().trim() === cleanSlug || a.id?.toLowerCase().trim() === cleanSlug
+    );
+    if (found) return found;
+  }
+
+  // 2. Direct key lookup in KV
   try {
     const ctrl = new AbortController();
-    const timeout = setTimeout(() => ctrl.abort(), 3500);
+    const timeout = setTimeout(() => ctrl.abort(), 3000);
 
     const res = await fetch(`${KV_BASE}/art_${cleanSlug}`, {
       signal: ctrl.signal,
@@ -119,6 +156,15 @@ export async function fetchSingleArticleFromCloud(slug: string): Promise<Article
         return article as Article;
       }
     }
+  } catch (e) {}
+
+  // 3. Fallback: refresh recent articles and check
+  try {
+    const fresh = await fetchRecentArticlesFromCloud();
+    const found = fresh.find(
+      (a) => a.slug?.toLowerCase().trim() === cleanSlug || a.id?.toLowerCase().trim() === cleanSlug
+    );
+    if (found) return found;
   } catch (e) {}
 
   return null;

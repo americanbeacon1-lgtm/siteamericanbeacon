@@ -424,6 +424,37 @@ export const db = {
     return newArticle;
   },
 
+  saveArticles(articles: Article[]): Article[] {
+    if (!articles || articles.length === 0) return [];
+    const data = ensureDataFile();
+    const existingIds = new Set(data.articles.map((a) => a.id));
+    const existingSlugs = new Set(data.articles.map((a) => a.slug.toLowerCase()));
+    const addedArticles: Article[] = [];
+
+    for (const art of articles) {
+      if (!art || !art.title) continue;
+      const cleanSlug = (
+        art.slug ||
+        art.title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '')
+      ).toLowerCase();
+
+      if (!existingIds.has(art.id) && !existingSlugs.has(cleanSlug)) {
+        data.articles.unshift(art);
+        existingIds.add(art.id);
+        existingSlugs.add(cleanSlug);
+        addedArticles.push(art);
+      }
+    }
+
+    if (addedArticles.length > 0) {
+      writeDataFile(data);
+    }
+    return addedArticles;
+  },
+
   async syncLatestArticles(): Promise<void> {
     try {
       const cloudArticles = await fetchRecentArticlesFromCloud();
