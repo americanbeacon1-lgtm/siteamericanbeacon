@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { Article, AdSlot, NewsletterSubscriber, SiteSettings, CategorySlug } from '@/types';
-import { SEED_ARTICLES } from '@/data/seed-articles';
 import { CATEGORIES } from '@/data/categories';
 import {
   fetchRecentArticlesFromCloud,
@@ -51,14 +50,8 @@ const DEFAULT_ADS: AdSlot[] = [
     name: 'Top Header Leaderboard (728x90 / 970x250 Billboard)',
     dimension: '728x90 / 970x250',
     enabled: true,
-    type: 'custom',
-    customBanner: {
-      imageUrl: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80',
-      targetUrl: '/advertise',
-      altText: 'Vanguard Capital Markets - Institutional Asset Management',
-      sponsorName: 'Vanguard Global Advisory',
-      ctaText: 'Explore Private Portfolio Solutions',
-    },
+    type: 'adsense',
+    htmlCode: '',
   },
   {
     id: 'ad-sidebar-mpu',
@@ -66,14 +59,8 @@ const DEFAULT_ADS: AdSlot[] = [
     name: 'Sidebar Half-Page & Medium Rectangle (300x250 / 300x600)',
     dimension: '300x600 Half-Page',
     enabled: true,
-    type: 'custom',
-    customBanner: {
-      imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80',
-      targetUrl: '/advertise',
-      altText: 'Advertise on The American Beacon — Reach 2.4M+ US Decision Makers',
-      sponsorName: 'Commercial Advertising Desk • americanbeacon@americanbeacon.online',
-      ctaText: 'Inquire via Email / Book Placement',
-    },
+    type: 'adsense',
+    htmlCode: '',
   },
   {
     id: 'ad-in-article',
@@ -81,14 +68,8 @@ const DEFAULT_ADS: AdSlot[] = [
     name: 'In-Article Sponsored Native Unit',
     dimension: 'Fluid / 728x90 Native',
     enabled: true,
-    type: 'custom',
-    customBanner: {
-      imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
-      targetUrl: '/advertise',
-      altText: 'Commercial Real Estate Credit Opportunities',
-      sponsorName: 'Beacon Commercial Lending',
-      ctaText: 'Review Yield Strategies',
-    },
+    type: 'adsense',
+    htmlCode: '',
   },
   {
     id: 'ad-feed-between',
@@ -96,14 +77,8 @@ const DEFAULT_ADS: AdSlot[] = [
     name: 'Homepage In-Feed Billboard',
     dimension: '970x90 Banner',
     enabled: true,
-    type: 'custom',
-    customBanner: {
-      imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80',
-      targetUrl: '/advertise',
-      altText: 'Dow Jones Real-Time Enterprise Analytics',
-      sponsorName: 'Financial Data Corp',
-      ctaText: 'Request Institutional Trial',
-    },
+    type: 'adsense',
+    htmlCode: '',
   },
   {
     id: 'ad-footer-sticky',
@@ -111,14 +86,8 @@ const DEFAULT_ADS: AdSlot[] = [
     name: 'Bottom Anchor Bar',
     dimension: '728x90 Mobile / Desktop Anchor',
     enabled: true,
-    type: 'custom',
-    customBanner: {
-      imageUrl: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=80',
-      targetUrl: '/advertise',
-      altText: 'Advertise with The American Beacon - Reach High-Net-Worth US Readers',
-      sponsorName: 'Beacon Partner Network',
-      ctaText: 'Download 2026 Media Kit',
-    },
+    type: 'adsense',
+    htmlCode: '',
   },
   {
     id: 'ad-corner-left',
@@ -126,15 +95,8 @@ const DEFAULT_ADS: AdSlot[] = [
     name: 'Banner Canto Esquerdo da Notícia (160x600 Skyscraper)',
     dimension: '160x600 Skyscraper',
     enabled: true,
-    type: 'custom',
+    type: 'adsense',
     htmlCode: '',
-    customBanner: {
-      imageUrl: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=400&q=80',
-      targetUrl: '/advertise',
-      altText: 'Goldman Sachs Institutional Wealth Management',
-      sponsorName: 'Goldman Sachs',
-      ctaText: 'Learn More',
-    },
   },
   {
     id: 'ad-corner-right',
@@ -142,15 +104,8 @@ const DEFAULT_ADS: AdSlot[] = [
     name: 'Banner Canto Direito da Notícia (160x600 Skyscraper)',
     dimension: '160x600 Skyscraper',
     enabled: true,
-    type: 'custom',
+    type: 'adsense',
     htmlCode: '',
-    customBanner: {
-      imageUrl: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=400&q=80',
-      targetUrl: '/advertise',
-      altText: 'AWS Cloud Sovereign Infrastructure',
-      sponsorName: 'Amazon Web Services',
-      ctaText: 'Explore Cloud',
-    },
   },
   {
     id: 'ad-corner-floating',
@@ -158,15 +113,8 @@ const DEFAULT_ADS: AdSlot[] = [
     name: 'Banner Flutuante no Canto da Tela (300x250 Sticky)',
     dimension: '300x250 Sticky Box',
     enabled: true,
-    type: 'custom',
+    type: 'adsense',
     htmlCode: '',
-    customBanner: {
-      imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80',
-      targetUrl: '/advertise',
-      altText: 'Bloomberg Terminal Professional Edition',
-      sponsorName: 'Bloomberg LP',
-      ctaText: 'Start Trial',
-    },
   },
 ];
 
@@ -221,9 +169,9 @@ function ensureDataFile(): DatabaseSchema {
     console.error('Error reading portal database:', error);
   }
 
-  // 3. Fallback to initial seeds
+  // 3. Fallback to initial database
   const initialData: DatabaseSchema = {
-    articles: SEED_ARTICLES,
+    articles: [],
     adSlots: DEFAULT_ADS,
     subscribers: [
       {
