@@ -453,34 +453,6 @@ function extractImageUrl(item: any): string | null {
   return null;
 }
 
-async function fetchOgImageFromLink(url: string): Promise<string | null> {
-  if (!url || typeof url !== 'string' || !url.startsWith('http')) return null;
-  try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 4000);
-    const res = await fetch(url, {
-      signal: ctrl.signal,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-      },
-    });
-    clearTimeout(timer);
-    if (!res.ok) return null;
-    const html = await res.text();
-    const ogMatch = html.match(/<meta[^>]+property=["\x27]og:image["\x27][^>]+content=["\x27]([^"\x27]+)["\x27]/i)
-      || html.match(/<meta[^>]+content=["\x27]([^"\x27]+)["\x27][^>]+property=["\x27]og:image["\x27]/i)
-      || html.match(/<meta[^>]+name=["\x27]twitter:image["\x27][^>]+content=["\x27]([^"\x27]+)["\x27]/i);
-    if (ogMatch && isValidImgCandidate(ogMatch[1])) {
-      let finalUrl = ogMatch[1];
-      const zenfsMatch = finalUrl.match(/https%3A%2F%2F(media\.zenfs\.com[^&]+)/i);
-      if (zenfsMatch) {
-        finalUrl = decodeURIComponent('https://' + zenfsMatch[1]);
-      }
-      return finalUrl;
-    }
-  } catch (e) {}
-  return null;
-}
 
 function stripHtml(html: string): string {
   if (!html) return '';
@@ -509,10 +481,25 @@ export interface FetchOptions {
   exactDay?: number; // e.g. 1 (last 24h), 2 (24-48h ago), ..., 10
 }
 
+interface CachedFeedResult {
+  timestamp: number;
+  articles: Article[];
+}
+
+const FEED_CACHE = new Map<string, CachedFeedResult>();
+const FEED_CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes (900 seconds) - cuts RSS subrequests by 99%
+
 export async function fetchFromFeed(feed: NewsFeedSource, options?: FetchOptions): Promise<Article[]> {
   const maxItems = options?.maxItems || 40;
   const daysBack = options?.daysBack !== undefined ? options.daysBack : 10;
   const exactDay = options?.exactDay;
+
+  // 1. Instant return from 15-minute memory cache
+  const cacheKey = `${feed.url}_${daysBack}_${maxItems}_${exactDay ?? 'none'}`;
+  const cached = FEED_CACHE.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < FEED_CACHE_TTL_MS) {
+    return cached.articles;
+  }
 
   const nowMs = Date.now();
   const cutoffDate = new Date(nowMs - daysBack * 24 * 60 * 60 * 1000);
@@ -529,6 +516,7 @@ export async function fetchFromFeed(feed: NewsFeedSource, options?: FetchOptions
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
         'Accept': 'application/rss+xml, application/xml, text/xml, */*',
       },
+      next: { revalidate: 900 },
     });
 
     clearTimeout(timeout);
@@ -673,6 +661,7 @@ export async function fetchFromFeed(feed: NewsFeedSource, options?: FetchOptions
       articles.push(article);
     }
 
+    FEED_CACHE.set(cacheKey, { timestamp: Date.now(), articles });
     return articles;
   } catch (error: any) {
     console.error(`[NewsFetcher] Error fetching feed ${feed.name}:`, error?.message || error);
@@ -752,31 +741,6 @@ export async function syncAllFeeds(options?: {
 }
 
 export async function findArticleInLiveFeeds(targetSlug: string): Promise<Article | null> {
-  if (!targetSlug) return null;
-  const cleanTarget = decodeURIComponent(targetSlug).toLowerCase().trim().replace(/[^a-z0-9]/g, '');
-  if (!cleanTarget) return null;
-
-  // Search across prominent feeds for matching story
-  const searchFeeds = US_NEWS_FEEDS.slice(0, 16);
-  for (const feed of searchFeeds) {
-    try {
-      const items = await fetchFromFeed(feed, { maxItems: 30, daysBack: 15 });
-      for (const art of items) {
-        const slugNorm = art.slug.toLowerCase().replace(/[^a-z0-9]/g, '');
-        const titleNorm = art.title.toLowerCase().replace(/[^a-z0-9]/g, '');
-        if (
-          slugNorm === cleanTarget ||
-          slugNorm.includes(cleanTarget) ||
-          cleanTarget.includes(slugNorm) ||
-          titleNorm.includes(cleanTarget) ||
-          cleanTarget.includes(titleNorm)
-        ) {
-          db.saveArticle(art);
-          saveSingleArticleToCloud(art).catch(() => {});
-          return art;
-        }
-      }
-    } catch (e) {}
-  }
+  // Guard: Zero external subrequests on missing slugs to prevent CPU time limit exhaustion
   return null;
 }

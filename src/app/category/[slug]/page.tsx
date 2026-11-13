@@ -10,8 +10,7 @@ import AdBanner from '@/components/AdBanner';
 import TrendingSidebar from '@/components/TrendingSidebar';
 import TechnologyCategoryFeed from '@/components/TechnologyCategoryFeed';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 600; // 10-minute Edge Cache for Category pages
 
 interface PageProps {
   params: Promise<{ slug: string }>;

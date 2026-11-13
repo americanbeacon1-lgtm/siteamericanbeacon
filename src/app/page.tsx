@@ -8,8 +8,7 @@ import AdBanner from '@/components/AdBanner';
 import TrendingSidebar from '@/components/TrendingSidebar';
 import LatestNewsFeed from '@/components/LatestNewsFeed';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 300; // 5-minute Edge Cache for Homepage
 
 export default async function HomePage() {
   await db.syncLatestArticles();

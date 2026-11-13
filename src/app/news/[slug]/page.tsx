@@ -16,8 +16,7 @@ import NewsImage from '@/components/NewsImage';
 import { getArticleOrigin } from '@/lib/content-origin';
 import { injectSemanticEntityLinks } from '@/lib/seo-mesh';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 900; // 15-minute Edge Cache to eliminate CPU time spikes
 
 interface PageProps {
   params: Promise<{ slug: string }>;

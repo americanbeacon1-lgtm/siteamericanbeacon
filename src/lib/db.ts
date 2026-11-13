@@ -432,29 +432,16 @@ export const db = {
   async findArticleBySlug(slug: string): Promise<Article | null> {
     if (!slug) return null;
 
-    // 1. Check local in-memory/file articles
+    // 1. Instant check in local in-memory/file articles
     const local = this.getArticleBySlug(slug);
     if (local) return local;
 
-    // 2. Direct lookup in cloud key-value store (instant)
+    // 2. Direct lookup in memory cloud store (instant, 0ms network)
     try {
       const cloudDirect = await fetchSingleArticleFromCloud(slug);
       if (cloudDirect) {
-        this.saveArticle(cloudDirect);
         return cloudDirect;
       }
-    } catch (e) {}
-
-    // 3. Sync recent cloud articles and re-check
-    await this.syncLatestArticles();
-    const afterSync = this.getArticleBySlug(slug);
-    if (afterSync) return afterSync;
-
-    // 4. Live feed deep resolver fallback (prevents false 404 for newly extracted wire items)
-    try {
-      const { findArticleInLiveFeeds } = await import('@/lib/news-fetcher');
-      const liveArticle = await findArticleInLiveFeeds(slug);
-      if (liveArticle) return liveArticle;
     } catch (e) {}
 
     return null;
