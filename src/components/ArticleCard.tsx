@@ -18,6 +18,10 @@ export default function ArticleCard({
   variant = 'standard',
   showCategory = true,
 }: ArticleCardProps) {
+  if (!article || !article.slug) {
+    return null;
+  }
+
   const categoryInfo = CATEGORY_MAP.get(article.category);
   const origin = getArticleOrigin(article);
 

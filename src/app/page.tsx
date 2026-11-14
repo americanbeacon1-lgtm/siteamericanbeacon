@@ -37,12 +37,12 @@ export default async function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Lead Story (Center/Left 8 Columns) */}
           <div className="lg:col-span-8">
-            <ArticleCard article={leadArticle} variant="hero" />
+            {leadArticle && <ArticleCard article={leadArticle} variant="hero" />}
 
             {/* Sub-lead stories row below main hero */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
               {sideLeadArticles.slice(0, 2).map((art) => (
-                <ArticleCard key={art.id} article={art} variant="standard" />
+                art ? <ArticleCard key={art.id} article={art} variant="standard" /> : null
               ))}
             </div>
           </div>

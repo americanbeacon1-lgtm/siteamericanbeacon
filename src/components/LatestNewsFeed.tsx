@@ -35,20 +35,24 @@ export default function LatestNewsFeed({
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [visibleCount, setVisibleCount] = useState<number>(18);
 
+  const safeArticles = useMemo(() => {
+    return Array.isArray(articles) ? articles.filter((a) => a && a.slug) : [];
+  }, [articles]);
+
   // Filter articles based on active category tab
   const filteredArticles = useMemo(() => {
-    if (selectedCategory === 'all') return articles;
+    if (selectedCategory === 'all') return safeArticles;
     if (selectedCategory === 'business') {
-      return articles.filter((a) => a.category === 'business' || a.category === 'finance');
+      return safeArticles.filter((a) => a.category === 'business' || a.category === 'finance');
     }
     if (selectedCategory === 'technology') {
-      return articles.filter((a) => a.category === 'technology' || a.category === 'artificial-intelligence');
+      return safeArticles.filter((a) => a.category === 'technology' || a.category === 'artificial-intelligence');
     }
     if (selectedCategory === 'science') {
-      return articles.filter((a) => a.category === 'science' || a.category === 'health');
+      return safeArticles.filter((a) => a.category === 'science' || a.category === 'health');
     }
-    return articles.filter((a) => a.category === selectedCategory);
-  }, [articles, selectedCategory]);
+    return safeArticles.filter((a) => a.category === selectedCategory);
+  }, [safeArticles, selectedCategory]);
 
   const displayedArticles = filteredArticles.slice(0, visibleCount);
   const hasMore = visibleCount < filteredArticles.length;

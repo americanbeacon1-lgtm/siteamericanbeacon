@@ -8,8 +8,8 @@ interface TrendingSidebarProps {
   articles: Article[];
 }
 
-export default function TrendingSidebar({ articles }: TrendingSidebarProps) {
-  const topArticles = articles.slice(0, 5);
+export default function TrendingSidebar({ articles = [] }: TrendingSidebarProps) {
+  const topArticles = (articles || []).filter((a) => a && a.slug).slice(0, 5);
 
   return (
     <div className="bg-white border border-neutral-200 rounded p-5 shadow-2xs">

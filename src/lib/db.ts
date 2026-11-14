@@ -8,6 +8,7 @@ import {
   fetchSingleArticleFromCloud,
   saveSingleArticleToCloud,
 } from '@/lib/cloud-store';
+import { SEED_ARTICLES } from '@/data/seed-articles';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'portal-db.json');
@@ -169,9 +170,9 @@ function ensureDataFile(): DatabaseSchema {
     console.error('Error reading portal database:', error);
   }
 
-  // 3. Fallback to initial database
+  // 3. Fallback to initial seed articles snapshot (guaranteed in Cloudflare Workers / Edge)
   const initialData: DatabaseSchema = {
-    articles: [],
+    articles: Array.isArray(SEED_ARTICLES) && SEED_ARTICLES.length > 0 ? [...SEED_ARTICLES] : [],
     adSlots: DEFAULT_ADS,
     subscribers: [
       {
