@@ -26,32 +26,24 @@ export function GoogleAdSlot({
 
   useEffect(() => {
     if (initialized.current) return;
-
-    const tryPush = () => {
-      try {
-        if (typeof window !== 'undefined' && window.__ADSENSE_LOADED__) {
-          ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-          initialized.current = true;
-          return true;
-        }
-      } catch {
-        // ignore
+    try {
+      if (typeof window !== 'undefined') {
+        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+        initialized.current = true;
       }
-      return false;
-    };
-
-    if (!tryPush()) {
-      const interval = setInterval(() => {
-        if (tryPush()) {
-          clearInterval(interval);
-        }
-      }, 400);
-      return () => clearInterval(interval);
+    } catch {
+      // ignore
     }
   }, []);
 
   return (
     <div className={`google-adsense-unit w-full overflow-hidden text-center my-1 ${className}`}>
+      {/* Google AdSense Official Script Tag */}
+      <script
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`}
+        crossOrigin="anonymous"
+      />
       <ins
         className="adsbygoogle"
         style={style}
